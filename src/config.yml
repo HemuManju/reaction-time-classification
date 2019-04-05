@@ -1,0 +1,18 @@
+# EEG data parameters
+epoch_length: 2
+n_electrodes: 9
+s_freq:       256
+##---------------------------------------------------------------------##
+# Experiment 0
+# All subjects are used for training and testing
+subjects:     ['0000','2006','6004','7000','7702','7703','7704',
+'7705','7706','7707','7708','7709','7710','7711','7712','7713',
+'7714','7715','7716','7717','7718','7719']
+test_subjects : []
+features :    []
+task_type :   ['no_force', 'error_reduction', 'error_augmentation']
+
+# Path
+raw_data_path : 'data/raw/eeg_data/'
+processed_dataset : 'data/processed/processed_exp_0_dataset.h5'
+##---------------------------------------------------------------------##
