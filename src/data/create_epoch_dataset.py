@@ -25,6 +25,26 @@ def read_matlab_file(config):
     return data
 
 
+def create_secondary_dataset(config):
+    """Create secondary dataset.
+
+    Parameters
+    ----------
+    config : yaml
+        The configuration data file.
+
+    Returns
+    -------
+    pandas dataframe
+
+    """
+
+    path = Path(__file__).parents[2] / config['raw_data_path'] / 'secondary_data.xls'
+    dataframe = pd.read_excel(str(path))
+
+    return dataframe
+
+
 def create_dataset(subjects, config):
     """Create dictionary dataset of subjects.
 
@@ -50,5 +70,6 @@ def create_dataset(subjects, config):
         df = np.vstack((df, matlab_data[:,:,i]))
 
     dataframe = pd.DataFrame(df, columns = config['features'])
+    secondary_dataframe = create_secondary_dataset(config)
 
-    return data, dataframe
+    return data, dataframe, secondary_dataframe
