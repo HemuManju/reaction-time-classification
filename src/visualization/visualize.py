@@ -41,3 +41,29 @@ def plot_detection_false_alarm_rate(config):
     plt.show()
 
     return None
+
+
+
+def plot_reaction_time(subject, config):
+
+
+    read_path = Path(__file__).parents[2] / config['processed_dataframe']
+    df = read_dataframe(str(read_path))
+    subject_df = df[df['subject']==subject]
+
+    f, (ax_box, ax_hist) = plt.subplots(2, sharex=True, gridspec_kw={"height_ratios": (.15, .85)})
+
+    # Add a graph in each part
+    sb.set()
+    sb.boxplot(subject_df['reaction_time'], ax=ax_box)
+    sb.distplot(subject_df['reaction_time'], ax=ax_hist)
+
+    # Remove x axis name for the boxplot
+    ax_box.set(xlabel='')
+    ax_hist.set_axisbelow(True)
+    ax_hist.grid()
+    plt.xlabel('Reaction time')
+    plt.tight_layout()
+    plt.show()
+
+    return None

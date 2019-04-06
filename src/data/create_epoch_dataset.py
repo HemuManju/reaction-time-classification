@@ -71,12 +71,12 @@ def create_dataset(subjects, config):
 
     matlab_data = read_matlab_file(config)
     data = {}
-    df = np.empty((0, matlab_data.shape[1]))
+    dataframe = pd.DataFrame()
     for i, subject in enumerate(subjects):
         data[subject] = matlab_data[:,:,i]
-        df = np.vstack((df, matlab_data[:,:,i]))
-
-    dataframe = pd.DataFrame(df, columns = config['features'])
+        df_temp = pd.DataFrame(matlab_data[:,:,i], columns = config['features'])
+        df_temp['subject'] = subject
+        dataframe = dataframe.append(df_temp, ignore_index=True)
     secondary_dataframe = create_secondary_dataset(config)
 
     return data, dataframe, secondary_dataframe
