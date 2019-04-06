@@ -41,6 +41,13 @@ def create_secondary_dataset(config):
 
     path = Path(__file__).parents[2] / config['raw_data_path'] / 'secondary_data.xls'
     dataframe = pd.read_excel(str(path))
+    # Add the performance level
+    experts_id = config['expert_id']
+    performance = ['low_performer']*len(config['subjects'])
+    for i, _ in enumerate(performance):
+        if i in experts_id:
+            performance[i] = 'high_performer'
+    dataframe['performance_level'] = performance
 
     return dataframe
 
