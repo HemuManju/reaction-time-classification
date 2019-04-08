@@ -76,7 +76,15 @@ def create_dataset(subjects, config):
         data[subject] = matlab_data[:,:,i]
         df_temp = pd.DataFrame(matlab_data[:,:,i], columns = config['features'])
         df_temp['subject'] = subject
+        if subject in config['expert']:
+            df_temp['performance_level'] = 'high_performer'
+        else:
+            df_temp['performance_level'] = 'low_performer'
         dataframe = dataframe.append(df_temp, ignore_index=True)
     secondary_dataframe = create_secondary_dataset(config)
+
+    # Remove nan and zeros
+    dataframe.dropna(inplace=True)
+    dataframe = dataframe[dataframe['reaction_time']!=0]
 
     return data, dataframe, secondary_dataframe

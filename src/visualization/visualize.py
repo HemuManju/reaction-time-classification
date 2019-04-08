@@ -44,7 +44,20 @@ def plot_detection_false_alarm(config):
 
 
 def plot_reaction_time(subject, config):
+    """Plot the reaction time of a subject (from all stage of the mission).
 
+    Parameters
+    ----------
+    subject : str
+        Subject id eg.'8807'.
+    config : yaml
+        The yaml configuration rate.
+
+    Returns
+    -------
+    None
+
+    """
 
     read_path = Path(__file__).parents[2] / config['processed_dataframe']
     df = read_dataframe(str(read_path))

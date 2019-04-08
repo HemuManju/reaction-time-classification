@@ -3,6 +3,7 @@ from utils import *
 from data.create_epoch_dataset import create_dataset
 from visualization.visualize import plot_detection_false_alarm
 from visualization.visualize import plot_reaction_time
+from models.classification import reaction_time_classification
 
 
 config = yaml.load(open('config.yml'))
@@ -20,8 +21,8 @@ with skip_run_code('skip', 'create_dataset') as check, check():
     save_dataset(str(save_path), data, save=True)
 
 
-with skip_run_code('skip', 'reaction_time_classification') as check, check():
-    print('Hello')
+with skip_run_code('run', 'reaction_time_classification') as check, check():
+    reaction_time_classification(config)
 
 
 with skip_run_code('skip', 'plot_reaction_time') as check, check():
