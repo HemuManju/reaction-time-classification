@@ -6,7 +6,7 @@ from sklearn.preprocessing import MinMaxScaler
 from .utils import read_dataframe, figure_asthetics
 
 
-def plot_detection_false_alarm_rate(config):
+def plot_detection_false_alarm(config):
     """Plots the detection rate and false alarm rate.
 
     Parameters
@@ -41,7 +41,6 @@ def plot_detection_false_alarm_rate(config):
     plt.show()
 
     return None
-
 
 
 def plot_reaction_time(subject, config):
