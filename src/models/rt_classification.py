@@ -8,8 +8,6 @@ from sklearn.metrics import accuracy_score
 from .utils import read_dataframe, create_classification_data
 
 
-
-
 def feature_selection(config):
     """Generate different combination of features from eye, pupil, and brain.
 

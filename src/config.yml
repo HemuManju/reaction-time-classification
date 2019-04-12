@@ -1,34 +1,33 @@
 ##---------------------------------------------------------------------##
 ## Experiment 0
 # EEG data parameters
-epoch_length  : 2
-n_electrodes  : 9
-s_freq  :       256
+epoch_length:            2
+n_electrodes:            9
+s_freq:                  256
 
 # Subject parameters
-subjects :    ['7704','7702','7703','7000','7705','0000','7706','6004','2006',
-'7707','7708','7709','7710','7711','7712','7713','7714',
+subjects:                ['7704','7702','7703','7000','7705','0000','7706',
+'6004','2006','7707','7708','7709','7710','7711','7712','7713','7714',
 '7715','7716','7717','7718','7719']
-expert :      ['7704','7702','7711','7714','7716','7718','7719']
-expert_id :   [0, 1, 15, 16, 18, 20, 21]
-novice :      ['7703','7000','7705','0000','7706','6004','2006',
+expert:                  ['7704','7702','7711','7714','7716','7718','7719']
+expert_id:               [0, 1, 15, 16, 18, 20, 21]
+novice:                  ['7703','7000','7705','0000','7706','6004','2006',
 '7707','7708','7709','7710','7712','7713','7715','7717']
-test_subjects : []
-features :    ['detected', 'drone_number' , 'target_shape', 'time', 'task_stage',
-'reaction_time', 'fixation_rate','situation_awareness','transition_ratio', 'glance_ratio', 'pupil_size',
-'mental_workload', 'avg_mental_workload', 'high_engagement', 'low_engagement', 'distraction']
-task_type :   ['no_force', 'error_reduction', 'error_augmentation']
+test_subjects:           []
+features:                ['detected', 'drone_number' , 'target_shape', 'time', 'task_stage','reaction_time','fixation_rate','situation_awareness',
+'transition_ratio', 'glance_ratio', 'pupil_size','mental_workload', 'avg_mental_workload', 'high_engagement', 'low_engagement', 'distraction']
+task_type:               ['no_force', 'error_reduction', 'error_augmentation']
 
 # Classification parameters for SVM
-gamma :        'scale'
-decision_function_shape : 'ovr'
-kernel  : 'rbf'
-test_size :    0.30
-
+gamma:                   'scale'
+decision_function_shape: 'ovr'
+kernel:                  'rbf'
+test_size:               0.30
 
 # Path
-raw_data_path : 'data/raw/'
-processed_dataset : 'data/processed/processed_exp_0_dataset.h5'
-secondary_dataframe : 'data/processed/secondary_exp_0_dataframe.pkl'
-processed_dataframe : 'data/processed/processed_exp_0_dataframe.pkl'
+raw_data_path:           'data/raw/'
+processed_dataset:       'data/processed/processed_exp_0_dataset.h5'
+secondary_dataframe:     'data/processed/secondary_exp_0_dataframe.pkl'
+processed_dataframe:     'data/processed/processed_exp_0_dataframe.pkl'
+r_dataframe:             'data/r_data/exp_0_dataframe.RData'
 ##---------------------------------------------------------------------##

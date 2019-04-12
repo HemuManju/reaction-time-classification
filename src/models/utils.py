@@ -2,6 +2,7 @@ import pickle
 from pathlib import Path
 import numpy as np
 import pandas as pd
+from ExGUtils import pyexg
 
 
 def create_classification_data(config, features, predicted_variable):
@@ -64,6 +65,11 @@ def read_dataframe(path):
         data = pickle.load(f)
 
     return data
+
+
+def ex_gaussian_quantile(data, quantile_range):
+
+    return None
 
 
 def model_logging(config, info, model):
