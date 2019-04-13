@@ -125,7 +125,6 @@ def create_r_dataframe(config):
     """
     read_path = Path(__file__).parents[2] / config['processed_dataframe']
     df = read_dataframe(read_path)
-    df = df[df['task_stage']!=1]
 
     save_path = Path(__file__).parents[2] / config['r_dataframe']
     feather.write_dataframe(df, save_path)
