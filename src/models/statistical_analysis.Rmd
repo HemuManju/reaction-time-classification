@@ -1,0 +1,86 @@
+---
+title: "statistical_analysis"
+---
+```{r Load the data}
+library(yaml)
+library(feather)
+library(lme4)
+library(lmerTest)
+library(simr)
+library(car)
+library(fitdistrplus)
+library(MASS)
+library(here)
+library(retimes)
+library(ghyp)
+
+# Read the configuration file
+config <- yaml.load_file("../config.yml")
+
+# Read the R dataframe
+r_dataframe_path <- here(config$r_dataframe)
+df <- read_feather(r_dataframe_path)
+df <- na.omit(df)
+
+# Convert to factor 
+factors <- c("task_stage", "fixation_rate", "transition_ratio", "glance_ratio", "pupil_size", "mental_workload", "avg_mental_workload", "high_engagement", "low_engagement", "distraction", "subject", "performance_level")
+df[factors] <- lapply(df[factors], as.factor)
+df
+```
+
+
+```{r Distribution analysis}
+rt <- df$reaction_time
+
+ plotdist(rt, histo = TRUE, demp = TRUE)
+
+# Distribution analysis
+qqp(rt, "lnorm")
+qqp(rt, "norm")
+
+beta <- fitdistr(rt, "beta", start=list(shape1=0.5, shape2=0.5))
+qqp(rt, "beta", shape1 = beta$estimate[[1]], shape2 = beta$estimate[[2]])
+
+gamma <- fitdistr(rt, "gamma")
+qqp(rt, "gamma", shape = gamma$estimate[[1]], rate = gamma$estimate[[2]])
+
+# Cullen and Frey graph
+descdist(rt, discrete = FALSE, boot = 1000)
+
+fit.weibull <- fitdist(rt, "weibull")
+fit.norm <- fitdist(rt, "norm")
+fit.gamma <- fitdist(rt, "gamma")
+fit.lnorm <- fitdist(rt, "lnorm")
+fit.exgauss <-  timefit(rt)
+
+# AIC varification
+fit.weibull$aic
+fit.norm$aic
+fit.gamma$aic
+fit.lnorm$aic
+fit.exgauss@AIC
+AIC <- stepAIC.ghyp(rt, dist = c("NIG"),
+                    symmetric = FALSE,
+                    control = list(maxit = 1000), silent = TRUE)
+AIC$fit.table
+```
+
+
+```{r Linear mixed models task type fixed effect}
+rt <-  df$reaction_time
+model1 <- glmer(rt ~ task_stage + (1 | subject), data = df, family=inverse.gaussian())
+summary(model1)
+```
+
+```{r Linear mixed models mental workload fixed effect}
+df$performance_level <- relevel(df$performance_level, 'low_performer')
+model2 <- glmer(rt ~ performance_level + (1 | subject), data = df, family=inverse.gaussian())
+summary(model2)
+```
+
+
+```{r Linear mixed models subject random effect}
+model3 <- lmer(rt ~ 1 + (1 | subject), data = df)
+summary(model3)
+```
+
