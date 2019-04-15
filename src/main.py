@@ -1,5 +1,9 @@
 import yaml
+import numpy as np
+import matplotlib.pyplot as plt
 from utils import *
+from scipy.optimize import curve_fit
+from scipy.stats import invgauss
 from data.create_dataset import create_dataframe
 from data.create_dataset import create_r_dataframe
 from models.t_sne_analysis import t_sne
@@ -24,7 +28,7 @@ with skip_run_code('skip', 'create_dataset') as check, check():
     save_dataset(str(save_path), data, save=True)
 
 
-with skip_run_code('run', 'create_r_dataframe') as check, check():
+with skip_run_code('skip', 'create_r_dataframe') as check, check():
     create_r_dataframe(config)
 
 
@@ -36,8 +40,9 @@ with skip_run_code('skip', 'density_analysis') as check, check():
     estimate_density(config)
 
 
-with skip_run_code('skip', 'reaction_time_classification') as check, check():
+with skip_run_code('run', 'reaction_time_classification') as check, check():
     reaction_time_classification(config)
+
 
 
 with skip_run_code('skip', 'plot_reaction_time') as check, check():

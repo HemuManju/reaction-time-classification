@@ -96,3 +96,22 @@ def save_dataframe(path, dataframe, save):
             pickle.dump(dataframe, f, pickle.HIGHEST_PROTOCOL)
 
     return None
+
+
+def read_dataframe(path):
+    """Save the dataset.
+
+    Parameters
+    ----------
+    path : str
+        path to save.
+    dataframe : dict
+        dictionary of pandas dataframe to save
+
+
+    """
+
+    with open(path, 'rb') as f:
+        data = pickle.load(f)
+
+    return data
