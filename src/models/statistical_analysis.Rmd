@@ -25,7 +25,7 @@ df <- read_feather(r_dataframe_path)
 df <- na.omit(df)
 
 # Convert to factor 
-factors <- c("task_stage", "fixation_rate", "transition_ratio", "glance_ratio", "pupil_size", "mental_workload", "avg_mental_workload", "high_engagement", "low_engagement", "distraction", "subject", "performance_level")
+factors <- c("task_stage", "fixation_rate", "transition_ratio", "glance_ratio", "pupil_size", "avg_mental_workload", "high_engagement", "low_engagement", "distraction", "subject", "performance_level")
 df[factors] <- lapply(df[factors], as.factor)
 df
 ```
@@ -111,10 +111,15 @@ plot(fit.exgauss)
  
 ```
 
+```{r}
+rt <-  df$mental_workload
+plotdist(rt)
+```
+
 
 ```{r Linear mixed models task type fixed effect}
-rt <-  df$reaction_time
-model1 <- glmer(rt ~ task_stage + (1 | subject), data = df, family=inverse.gaussian())
+rt <-  df$mental_workload
+model1 <- lmer(rt ~ task_stage + (1 | subject), data = df)
 summary(model1)
 ```
 

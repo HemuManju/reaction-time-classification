@@ -10,6 +10,7 @@ from models.t_sne_analysis import t_sne
 from visualization.visualize import plot_detection_false_alarm
 from visualization.visualize import plot_reaction_time
 from models.rt_classification import reaction_time_classification
+from models.task_classification import task_type_classification
 from models.density_estimation import estimate_density
 
 
@@ -40,9 +41,12 @@ with skip_run_code('skip', 'density_analysis') as check, check():
     estimate_density(config)
 
 
-with skip_run_code('run', 'reaction_time_classification') as check, check():
+with skip_run_code('skip', 'reaction_time_classification') as check, check():
     reaction_time_classification(config)
 
+
+with skip_run_code('run', 'task_type_classification') as check, check():
+    task_type_classification(config)
 
 
 with skip_run_code('skip', 'plot_reaction_time') as check, check():

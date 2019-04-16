@@ -4,7 +4,9 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 from sklearn import svm
-from scipy.stats import invgauss
+from scipy.stats import invgauss, norm
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from scipy import stats
@@ -69,21 +71,21 @@ def create_classification_data(config, features, predicted_variable):
         df_temp = df[df['subject']==subject]
         x_temp = df_temp[features].values
         y_temp = df_temp[predicted_variable].values
-        dummy = y_temp.copy()
+        y_dummy = y_temp.copy()
         percentile = inverse_gaussian_percentile(y_temp, [0.0001, 0.25, 0.75, 0.9999])
         # Get percentile and divide into class
         for i in range(len(percentile)-1):
             temp = (y_temp >= percentile[i]) & (y_temp <= percentile[i+1])
-            dummy[temp] = i
-
-
-        x = np.vstack((x, x_temp))
-        y = np.vstack((y, dummy))
+            y_dummy[temp] = i
+        # z-score of the features
+        x_dummy = stats.zscore(x_temp, axis=0)
+        x = np.vstack((x, x_dummy))
+        y = np.vstack((y, y_dummy))
     # Balance the dataset
     rus = RandomUnderSampler(random_state=0)
-    x_balanced, y_balanced = rus.fit_resample(x, y)
+    x, y = rus.fit_resample(x, y)
 
-    return x_balanced, y_balanced
+    return x, y
 
 
 def inverse_gaussian_percentile(data, percentiles):
@@ -127,7 +129,7 @@ def feature_selection(config):
 
     eye_features = ['fixation_rate','transition_ratio', 'glance_ratio']
     pupil_size = ['pupil_size']
-    brain_features = ['mental_workload', 'avg_mental_workload', 'high_engagement', 'low_engagement', 'distraction']
+    brain_features = ['mental_workload','high_engagement', 'low_engagement', 'distraction']
     predicted_variable = ['reaction_time']
     task_stage = ['']
     features = [pupil_size, eye_features, eye_features+pupil_size, brain_features, brain_features+pupil_size, brain_features+eye_features, eye_features+brain_features+pupil_size]

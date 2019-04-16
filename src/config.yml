@@ -6,12 +6,12 @@ n_electrodes:            9
 s_freq:                  256
 
 # Subject parameters
-subjects:                ['7704','7702','7703','7000','7705','0000','7706',
+subjects:                ['7704','7702','7703','7000','7705','7706',
 '6004','2006','7707','7708','7709','7710','7711','7712','7713','7714',
 '7715','7716','7717','7718','7719']
 expert:                  ['7704','7702','7711','7714','7716','7718','7719']
-expert_id:               [0, 1, 15, 16, 18, 20, 21]
-novice:                  ['7703','7000','7705','0000','7706','6004','2006',
+expert_id:               [0, 1, 14, 15, 17, 19, 20]
+novice:                  ['7703','7000','7705','7706','6004','2006',
 '7707','7708','7709','7710','7712','7713','7715','7717']
 test_subjects:           []
 features:                ['detected', 'drone_number' , 'target_shape', 'time', 'task_stage','reaction_time','fixation_rate','situation_awareness',
@@ -19,9 +19,9 @@ features:                ['detected', 'drone_number' , 'target_shape', 'time', '
 task_type:               ['no_force', 'error_reduction', 'error_augmentation']
 
 # Classification parameters for SVM
-gamma:                   'scale'
+gamma:                   'auto'
 decision_function_shape: 'ovr'
-kernel:                  'rbf'
+kernel:                  'poly'
 test_size:               0.30
 
 # Path
