@@ -19,10 +19,11 @@ features:                ['detected', 'drone_number' , 'target_shape', 'time', '
 task_type:               ['no_force', 'error_reduction', 'error_augmentation']
 
 # Classification parameters for SVM
-gamma:                   'auto'
-decision_function_shape: 'ovr'
-kernel:                  'poly'
+gamma:                   'scale'
+decision_function_shape: 'ovo'
+kernel:                  'rbf'
 test_size:               0.30
+include_task:            True
 
 # Path
 raw_data_path:           'data/raw/'

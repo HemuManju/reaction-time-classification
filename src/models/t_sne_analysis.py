@@ -36,6 +36,7 @@ def t_sne(config):
     ax
     plt.xlabel('Embedding 1')
     plt.ylabel('Embedding 2')
+    plt.tight_layout()
     plt.legend()
     plt.show()
 

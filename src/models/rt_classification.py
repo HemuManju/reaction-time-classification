@@ -5,7 +5,7 @@ import numpy as np
 from pathlib import Path
 from sklearn import svm
 from scipy.stats import invgauss, norm
-from sklearn.ensemble import AdaBoostClassifier
+from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -72,14 +72,14 @@ def create_classification_data(config, features, predicted_variable):
         x_temp = df_temp[features].values
         y_temp = df_temp[predicted_variable].values
         y_dummy = y_temp.copy()
-        percentile = inverse_gaussian_percentile(y_temp, [0.0001, 0.25, 0.75, 0.9999])
+        percentile = inverse_gaussian_percentile(y_temp, [0.0001, 0.20, 0.80, 0.9999])
         # Get percentile and divide into class
         for i in range(len(percentile)-1):
             temp = (y_temp >= percentile[i]) & (y_temp <= percentile[i+1])
             y_dummy[temp] = i
         # z-score of the features
-        x_dummy = stats.zscore(x_temp, axis=0)
-        x = np.vstack((x, x_dummy))
+        # x_dummy = stats.zscore(x_temp, axis=0)
+        x = np.vstack((x, x_temp))
         y = np.vstack((y, y_dummy))
     # Balance the dataset
     rus = RandomUnderSampler(random_state=0)
@@ -127,12 +127,14 @@ def feature_selection(config):
 
     """
 
-    eye_features = ['fixation_rate','transition_ratio', 'glance_ratio']
+    eye_features = ['fixation_rate','transition_ratio', 'glance_ratio', 'pupil_size']
     pupil_size = ['pupil_size']
     brain_features = ['mental_workload','high_engagement', 'low_engagement', 'distraction']
     predicted_variable = ['reaction_time']
     task_stage = ['']
-    features = [pupil_size, eye_features, eye_features+pupil_size, brain_features, brain_features+pupil_size, brain_features+eye_features, eye_features+brain_features+pupil_size]
+    features = [eye_features, brain_features,  brain_features+eye_features]
+    if config['include_task']:
+        features = [item + ['task_stage'] for item in features]
 
     x, y = {}, {}
     for i, feature in enumerate(features):
@@ -159,11 +161,13 @@ def reaction_time_classification(config):
     X, Y = feature_selection(config)
 
     clf = {}
+    results = []
     for key in X.keys():
         x_train, x_test, y_train, y_test = train_test_split(X[key], Y[key], test_size=config['test_size'])
-        clf[key] = svm.SVC(gamma=config['gamma'], kernel=config['kernel'], decision_function_shape=config['decision_function_shape'])
+        # clf[key] = svm.SVC(gamma=config['gamma'], kernel=config['kernel'], decision_function_shape=config['decision_function_shape'])
+        clf[key] = AdaBoostClassifier(RandomForestClassifier(n_estimators=100,n_jobs=-1), n_estimators=100)
         clf[key].fit(x_train, y_train.flatten())
         y_pred =  clf[key].predict(x_test)
-        print(accuracy_score(y_test, y_pred))
+        results.append(accuracy_score(y_test, y_pred))
 
-    return None
+    return results

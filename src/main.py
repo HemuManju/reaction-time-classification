@@ -41,11 +41,15 @@ with skip_run_code('skip', 'density_analysis') as check, check():
     estimate_density(config)
 
 
-with skip_run_code('skip', 'reaction_time_classification') as check, check():
-    reaction_time_classification(config)
+with skip_run_code('run', 'reaction_time_classification') as check, check():
+    run_results = []
+    for i in range(10):
+        result = reaction_time_classification(config)
+        run_results.append(result)
+    print(np.asarry(run_results))
 
 
-with skip_run_code('run', 'task_type_classification') as check, check():
+with skip_run_code('skip', 'task_type_classification') as check, check():
     task_type_classification(config)
 
 
