@@ -20,9 +20,9 @@ task_type:               ['no_force', 'error_reduction', 'error_augmentation']
 
 # Classification parameters for SVM
 gamma:                   'scale'
-decision_function_shape: 'ovo'
+decision_function_shape: 'ovr'
 kernel:                  'rbf'
-test_size:               0.30
+test_size:               0.05
 include_task:            True
 
 # Path

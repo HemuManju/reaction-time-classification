@@ -43,10 +43,11 @@ with skip_run_code('skip', 'density_analysis') as check, check():
 
 with skip_run_code('run', 'reaction_time_classification') as check, check():
     run_results = []
-    for i in range(10):
-        result = reaction_time_classification(config)
-        run_results.append(result)
-    print(np.asarry(run_results))
+    for i in range(5):
+        results = reaction_time_classification(config)
+        run_results.append(results)
+    temp = np.asarray(run_results)
+    print(temp,  np.mean(temp, axis=0))
 
 
 with skip_run_code('skip', 'task_type_classification') as check, check():
