@@ -107,12 +107,10 @@ def create_classification_data(config, features, predicted_variable):
         x = np.vstack((x, x_dummy))
         y = np.vstack((y, y_dummy))
     # Balance the dataset
-    rus = RandomUnderSampler(random_state=0)
+    rus = RandomUnderSampler()
     x, y = rus.fit_resample(x, y)
 
     return x, y
-
-
 
 
 
