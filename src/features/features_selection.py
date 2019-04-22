@@ -3,41 +3,16 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 from sklearn import svm
-from scipy.stats import invgauss, norm
+import matplotlib.pyplot as plt
+from scipy.stats import invgauss
+from scipy.stats import zscore
+from sklearn.svm import SVC
 from sklearn import model_selection
-from sklearn.ensemble import BaggingClassifier
+from sklearn.ensemble import BaggingClassifier, RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score
-from scipy import stats
+from yellowbrick.features import RFECV
 from imblearn.under_sampling import RandomUnderSampler
-from collections import Counter
 from .utils import read_dataframe
-
-
-def recinormal(rt, mu, sigma):
-    """Recinormal distribution.
-
-    Parameters
-    ----------
-    rt : array
-        Reaction time vector.
-    mu : numeric
-        mean of the distribution.
-    sigma : numeric
-        Variance of the distribution.
-
-    Returns
-    -------
-    array
-        recinormal pdf of given rt.
-
-    """
-
-    if sigma==0:
-        f = np.zeros_like(rt)
-    else:
-        f = 1/(rt**2*sigma*np.sqrt(2*np.pi))*np.exp(-(mu*rt-1)**2/(2*rt**2*sigma**2))
-    return f
 
 
 def inverse_gaussian_percentile(data, percentiles):
@@ -85,7 +60,6 @@ def create_classification_data(config, features, predicted_variable):
 
     read_path = Path(__file__).parents[2] / config['processed_dataframe']
     df = read_dataframe(read_path)
-
     #Initialise
     x = np.empty((0, len(features)))
     y = np.empty((0, len(predicted_variable)))
@@ -95,13 +69,15 @@ def create_classification_data(config, features, predicted_variable):
         x_temp = df_temp[features].values
         y_temp = df_temp[predicted_variable].values
         y_dummy = y_temp.copy()
-        percentile = inverse_gaussian_percentile(y_temp, [0.0001, 0.10, 0.90, 0.9999])
+        percentile = inverse_gaussian_percentile(y_temp, [0.0001, 0.25, 0.75, 0.9999])
         # Get percentile and divide into class
         for i in range(len(percentile)-1):
             temp = (y_temp >= percentile[i]) & (y_temp <= percentile[i+1])
             y_dummy[temp] = i
         # z-score of the features
-        x_dummy = x_temp
+        x_dummy = zscore(x_temp[:,0:-1], axis=0)
+        # Add back the task type
+        x_dummy = np.hstack((x_dummy, np.expand_dims(x_dummy[: ,-1], axis=1)))
         x = np.vstack((x, x_dummy))
         y = np.vstack((y, y_dummy))
     # Balance the dataset
@@ -111,37 +87,8 @@ def create_classification_data(config, features, predicted_variable):
     return x, y
 
 
-def create_feature_set(config):
-    """Generate different combination of features from eye, pupil, and brain.
-
-    Parameters
-    ----------
-    config : yaml
-        The configuration file.
-
-    Returns
-    -------
-    dict
-        A dictionary with different training data.
-
-    """
-
-    eye_features = ['fixation_rate','transition_ratio', 'glance_ratio', 'pupil_size']
-    brain_features = ['mental_workload', 'distraction']
-    predicted_variable = ['reaction_time']
-    features = [eye_features, brain_features,  brain_features+eye_features]
-    if config['include_task']:
-        features = [item + ['task_stage'] for item in features]
-
-    x, y = {}, {}
-    for i, feature in enumerate(features):
-        x[i], y[i] = create_classification_data(config, feature, predicted_variable)
-
-    return x, y
-
-
-def reaction_time_classification(config):
-    """Perform reaction time classification with different features.
+def selected_features(config):
+    """Selected features for the classification of reaction time.
 
     Parameters
     ----------
@@ -151,21 +98,30 @@ def reaction_time_classification(config):
     Returns
     -------
     list
-        Accuracy of classification.
+        A list of selected features.
 
     """
 
-    X, Y = create_feature_set(config)
+    eye_features = ['fixation_rate','transition_ratio', 'glance_ratio', 'pupil_size']
+    brain_features = ['mental_workload', 'high_engagement', 'low_engagement', 'distraction']
+    predicted_variable = ['reaction_time']
+    features = eye_features + brain_features
 
-    clf = {}
-    results = []
-    for key in X.keys():
-        x_train, x_test, y_train, y_test = model_selection.train_test_split(X[key], Y[key], test_size=config['test_size'])
-        kfold = model_selection.KFold(n_splits=3, random_state=2)
-        base_clf = DecisionTreeClassifier()
-        num_trees = 200
-        clf = BaggingClassifier(base_estimator=base_clf, n_estimators=num_trees, random_state=2)
-        output = model_selection.cross_val_score(clf, x_train, y_train.ravel(), cv=kfold)
-        results.append(output.mean())
+    if config['include_task_type']:
+        features = features + ['task_type']
 
-    return results
+    # Dataset creation with all features
+    x, y = create_classification_data(config, features, predicted_variable)
+
+    # Estimator
+    base_clf = DecisionTreeClassifier(max_depth=2)
+    num_trees = 200
+    clf = BaggingClassifier(base_estimator=base_clf, n_estimators=num_trees, random_state=2)
+
+    cv = model_selection.StratifiedKFold(5)
+    oz = RFECV(base_clf, cv=cv, scoring='accuracy')
+    oz.fit(x, y)
+    oz.poof()
+
+
+    return None

@@ -23,7 +23,7 @@ gamma:                   'scale'
 decision_function_shape: 'ovr'
 kernel:                  'rbf'
 test_size:               0.05
-include_task:            True
+include_task_type:       False
 
 # Path
 raw_data_path:           'data/raw/'

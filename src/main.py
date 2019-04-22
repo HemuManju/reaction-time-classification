@@ -7,11 +7,12 @@ from scipy.stats import invgauss
 from data.create_dataset import create_dataframe
 from data.create_dataset import create_r_dataframe
 from models.t_sne_analysis import t_sne
-from visualization.visualize import plot_detection_false_alarm
-from visualization.visualize import plot_reaction_time
+from features.features_selection import selected_features
 from models.rt_classification import reaction_time_classification
 from models.task_classification import task_type_classification
 from models.density_estimation import estimate_density
+from visualization.visualize import plot_detection_false_alarm
+from visualization.visualize import plot_reaction_time
 
 
 config = yaml.load(open('config.yml'))
@@ -41,7 +42,11 @@ with skip_run_code('skip', 'density_analysis') as check, check():
     estimate_density(config)
 
 
-with skip_run_code('run', 'reaction_time_classification') as check, check():
+with skip_run_code('run', 'features_selection') as check, check():
+    selected_features(config)
+
+
+with skip_run_code('skip', 'reaction_time_classification') as check, check():
     run_results = []
     for i in range(5):
         results = reaction_time_classification(config)

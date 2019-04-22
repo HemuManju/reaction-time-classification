@@ -96,6 +96,18 @@ def create_dataframe(subjects, config):
         data[subject] = matlab_data[:,:,i]
         df_temp = pd.DataFrame(matlab_data[:,:,i], columns = config['features'])
         df_temp['subject'] = subject
+        # Append task type
+        df_temp.loc[df_temp.task_stage <= 3, 'task_type'] = 0
+        df_temp.loc[df_temp.task_stage >= 4, 'task_type'] = 1
+
+        # Append task difficulty
+        # Visual
+        df_temp.loc[(df_temp.task_stage<=2) & (df_temp.task_type==0), 'task_difficulty'] = 1
+        df_temp.loc[(df_temp.task_stage==3) & (df_temp.task_type==0), 'task_difficulty'] = 2
+        # Motor
+        df_temp.loc[(df_temp.task_stage==4) & (df_temp.task_type==1), 'task_difficulty'] = 1
+        df_temp.loc[(df_temp.task_stage==5) & (df_temp.task_type==1), 'task_difficulty'] = 2
+
         if subject in config['expert']:
             df_temp['performance_level'] = 'high_performer'
         else:
