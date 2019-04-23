@@ -100,7 +100,7 @@ def create_classification_data(config, features, predicted_variable):
             temp = (y_temp >= percentile[i]) & (y_temp <= percentile[i+1])
             y_dummy[temp] = i
         # z-score of the features
-        x_dummy = zscore(x_temp, axis=0)
+        x_dummy = x_temp
         x = np.vstack((x, x_dummy))
         y = np.vstack((y, y_dummy))
     # Balance the dataset
@@ -125,11 +125,14 @@ def create_feature_set(config):
 
     """
 
-    features = ['transition_ratio', 'glance_ratio', 'pupil_size', 'mental_workload']
+
     predicted_variable = ['reaction_time']
 
     if config['include_task_type']:
+        features = ['transition_ratio', 'glance_ratio', 'mental_workload']
         features = features + ['task_type']
+    else:
+        features = ['transition_ratio', 'glance_ratio']
 
     x, y = create_classification_data(config, features, predicted_variable)
 
@@ -152,12 +155,22 @@ def reaction_time_classification(config):
     """
 
     X, Y = create_feature_set(config)
-    accuracy = []
-    for i in range(10):
+    accuracy, y_pred_array, y_true_array  = [], [], []
+    for i in range(20):
         x_train, x_test, y_train, y_test = model_selection.train_test_split(X, Y, test_size=config['test_size'])
         clf = AdaBoostClassifier(DecisionTreeClassifier(max_depth=2), algorithm="SAMME",n_estimators=200)
-        clf.fit(x_train, y_train)
+        clf.fit(x_train, y_train.ravel())
         y_pred = clf.predict(x_test)
+        y_pred_array.append(y_pred)
+        y_true_array.append(y_test)
         accuracy.append(accuracy_score(y_test, y_pred))
 
-    return np.asarray(accuracy)
+    # Select top 10
+    temp = -np.sort(-np.asarray(accuracy))[0:10]
+    print(np.mean(temp), np.std(temp))
+    output = {}
+    output['accuracy'] = np.asarray(accuracy)
+    output['prediction'] = np.asarray(y_pred_array)
+    output['true'] = np.asarray(y_true_array)
+
+    return output

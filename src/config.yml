@@ -31,4 +31,5 @@ processed_dataset:       'data/processed/processed_exp_0_dataset.h5'
 secondary_dataframe:     'data/processed/secondary_exp_0_dataframe.pkl'
 processed_dataframe:     'data/processed/processed_exp_0_dataframe.pkl'
 r_dataframe:             'data/r_data/exp_0_dataframe.RData'
+save_path :              'models/'
 ##---------------------------------------------------------------------##

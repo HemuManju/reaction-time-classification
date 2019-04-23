@@ -20,11 +20,18 @@ def plot_box_reaction_time(config):
     None
 
     """
-    read_path = Path(__file__).parents[2] / config['processed_dataframe']
-    df = read_dataframe(str(read_path))
-    print(np.max(df['reaction_time'].values))
-    print(df.groupby('task_stage')['reaction_time'].mean())
-    sb.boxplot(x="task_stage", y="reaction_time", data=df)
+    # Using the data from MATLAB file run
+    data = np.array(
+    [[0, 42.09, 3.54], [0.5, 50.33, 4.76], [0.1, 44.34, 3.69], [0.6, 51.63, 3.19], [0.2, 44.13, 1.60], [0.7, 49.71, 4.02]])
+
+    fig, ax = plt.subplots(figsize=(6, 4))
+    for i in range(0, 6, 2):
+        plt.bar(data[i:i + 2, 0]/2, data[i:i + 2, 1], yerr=data[i:i + 2, 2], capsize=4, width=0.04)
+    plt.legend(['All subjects', 'High performers', 'Low performers'])
+    plt.xlabel('Task information')
+    plt.xticks([0.05, 0.55], ['Not \n included', 'Included'])
+    plt.ylabel('Reaction time classification accuracy')
+    plt.subplots_adjust()
     plt.show()
 
     return None

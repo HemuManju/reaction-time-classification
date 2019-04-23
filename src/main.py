@@ -19,7 +19,7 @@ from visualization.visualize import plot_box_reaction_time
 config = yaml.load(open('config.yml'))
 
 
-with skip_run_code('run', 'create_dataset') as check, check():
+with skip_run_code('skip', 'create_dataset') as check, check():
     data, dataframe, secondary_dataframe = create_dataframe(config['subjects'], config)
     save_path = Path(__file__).parents[1] / config['processed_dataframe']
     save_dataframe(str(save_path), dataframe, save=True)
@@ -31,11 +31,11 @@ with skip_run_code('run', 'create_dataset') as check, check():
     save_dataset(str(save_path), data, save=True)
 
 
-with skip_run_code('run', 'create_r_dataframe') as check, check():
+with skip_run_code('skip', 'create_r_dataframe') as check, check():
     create_r_dataframe(config)
 
 
-with skip_run_code('run', 'box_plot_reaction_time') as check, check():
+with skip_run_code('skip', 'box_plot_reaction_time') as check, check():
     plot_box_reaction_time(config)
 
 
@@ -52,8 +52,14 @@ with skip_run_code('skip', 'features_selection') as check, check():
 
 
 with skip_run_code('skip', 'reaction_time_classification') as check, check():
-    accuracy = reaction_time_classification(config)
-    print(accuracy)
+    output = reaction_time_classification(config)
+    # Append more information to model
+    if config['include_task_type']:
+        output['model_name'] = 'model_task_type_included'
+    else:
+        output['model_name'] = 'model_task_type_not_included'
+    save_path = str(Path(__file__).parents[1] / config['save_path'])
+    model_log(output, save_path)
 
 
 with skip_run_code('skip', 'task_type_classification') as check, check():
