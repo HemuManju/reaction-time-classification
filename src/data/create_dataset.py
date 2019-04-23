@@ -118,7 +118,7 @@ def create_dataframe(subjects, config):
     # Remove nan and zeros
     dataframe.dropna(inplace=True)
     dataframe = dataframe[dataframe['reaction_time']!=0]
-    # dataframe = dataframe[dataframe['task_stage']!=1]
+    dataframe = dataframe[dataframe['task_stage']!=1]
 
     return data, dataframe, secondary_dataframe
 

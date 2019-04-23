@@ -7,7 +7,19 @@ from sklearn.preprocessing import MinMaxScaler
 from .utils import read_dataframe, figure_asthetics
 
 
-def plot_bar_reaction_time(config):
+def plot_box_reaction_time(config):
+    """Plots the reaction time box plot
+
+    Parameters
+    ----------
+    config : yaml
+        The yaml configuration rate.
+
+    Returns
+    -------
+    None
+
+    """
     read_path = Path(__file__).parents[2] / config['processed_dataframe']
     df = read_dataframe(str(read_path))
     print(np.max(df['reaction_time'].values))

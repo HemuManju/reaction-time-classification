@@ -39,36 +39,43 @@ subjects <-  unique(df$subject)
 aic.output <- function(df){
   rt <- df$reaction_time
   # Fit different distributions
+  fit.normal <- fitdist(rt, "norm");
   fit.weibull <- fitdist(rt, "weibull");
   fit.gamma <- fitdist(rt, "gamma");
-  
-  myoptim <- function(fn, par, ui, ci, ...)
-  {
-    res <- constrOptim(f=fn, theta=par, method="Nelder-Mead", ui=ui, ci=ci, ...)
-    c(res, convergence=res$convergence, value=res$objective, par=res$minimum, hessian=res$hessian)
-  }
-  x <- rnig(1000, 3, 1/2, 1/2, 1/4)
-  ui <- rbind(c(0,1,0,0), c(0,0,1,0), c(0,0,1,-1), c(0,0,1,1))
-  ci <- c(0,0,0,0)
 
-  fit.invgauss <- fitdist(rt, "nig", custom.optim=myoptim, ui=ui, ci=ci,
-                          start=list(mu = 0.1, delta = 1, alpha = 1, beta = 0));
+  
+  # Custom inverse gauss distribution fit
+  dinvgauss <- function(x, u, l){
+    ifelse(t==0, 0.0, sqrt(l/(2*pi*x^3))*exp(-l*(x-u)^2/(2*u^2*x)));
+  }
+  
+  pinvgauss <- function(q, u, l){
+    integrate(dinvgauss, 0, q, u, l, abs.tol=1E-5)$value;
+  }
+  
+  qinvgauss <-  function(p, u, l){
+    uniroot(function(x){pinvgauss(x, u, l) - p}, c(0, 5))$root;
+  }
+
+  fit.invgauss <- fitdist(rt,"invgauss", start=list(u=0.5,l=1.5));
   
   # Custom reci-normal distribution fit
-  drecinormal <-  function(t, u, s){
-    ifelse(t==0.0, 0.0, 1/(t^2*s*sqrt(2*pi))*exp(-(u*t-1)^2/(2*t^2*s^2)));
+  drecinorm <- function(x, u, s){
+    ifelse(t==0, 0.0, 1/(x^2*s*sqrt(2*pi))*exp(-(u*x-1)^2/(2*x^2*s^2)));
   }
   
-  precinormal <- function(t, u, s){
-    integrate(drecinormal, 0, t, u, s, abs.tol=1E-5)$value;
+  precinorm <- function(q, u, s){
+    integrate(drecinorm, 0, q, u, s, abs.tol=1E-5)$value;
   }
   
-  qrecinormal <-  function(q, u, s){
-    uniroot(function(x){precinormal(x, u, s) - q}, c(0, 5))$root
+  qrecinorm <-  function(p, u, s){
+    uniroot(function(x){precinorm(x, u, s) - p}, c(0, 5))$root;
   }
-  fit.recinormal <- fitdist(rt,"recinormal", start=list(u=0.5,s=1.5));
+
+  fit.recinorm <- fitdist(rt,"recinorm", start=list(u=0.5,s=1.5));
   
-  output <-  c(fit.weibull$aic, fit.gamma$aic, fit.invgauss$aic, fit.recinormal$aic)
+  output <-  c(fit.normal$aic, fit.weibull$aic, fit.gamma$aic, fit.invgauss$aic, fit.recinorm$aic)
+  
 return(output)
   
 }
@@ -81,8 +88,13 @@ for (subject in subjects){
 ```
 
 
+```{r}
+aggregate(df[, 6], list(df$task_stage), mean)
+```
+
+
 ```{r Average aic analysis}
-processed <- out[out[,4]<0, ]
+processed <- out[out[,5]<0, ]
 colMeans(processed)
 ```
 
@@ -111,7 +123,8 @@ plot(fit.exgauss)
  
 ```
 
-```{r}
+
+```{r Mental workload analysis}
 rt <-  df$mental_workload
 plotdist(rt)
 ```
@@ -121,10 +134,6 @@ plotdist(rt)
 rt <-  df$mental_workload
 model1 <- lmer(rt ~ task_stage + (1 | subject), data = df)
 summary(model1)
-```
-
-```{r}
-
 ```
 
 
