@@ -2,9 +2,20 @@ import pandas as pd
 import seaborn as sb
 from pathlib import Path
 import matplotlib.pyplot as plt
+import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from .utils import read_dataframe, figure_asthetics
 
+
+def plot_bar_reaction_time(config):
+    read_path = Path(__file__).parents[2] / config['processed_dataframe']
+    df = read_dataframe(str(read_path))
+    print(np.max(df['reaction_time'].values))
+    print(df.groupby('task_stage')['reaction_time'].mean())
+    sb.boxplot(x="task_stage", y="reaction_time", data=df)
+    plt.show()
+
+    return None
 
 def plot_detection_false_alarm(config):
     """Plots the detection rate and false alarm rate.

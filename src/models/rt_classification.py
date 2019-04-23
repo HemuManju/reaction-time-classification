@@ -3,12 +3,11 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 from sklearn import svm
-from scipy.stats import invgauss, norm
+from scipy.stats import invgauss, norm, zscore
 from sklearn import model_selection
-from sklearn.ensemble import BaggingClassifier
+from sklearn.ensemble import AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
-from scipy import stats
 from imblearn.under_sampling import RandomUnderSampler
 from collections import Counter
 from .utils import read_dataframe
@@ -95,13 +94,13 @@ def create_classification_data(config, features, predicted_variable):
         x_temp = df_temp[features].values
         y_temp = df_temp[predicted_variable].values
         y_dummy = y_temp.copy()
-        percentile = inverse_gaussian_percentile(y_temp, [0.0001, 0.10, 0.90, 0.9999])
+        percentile = inverse_gaussian_percentile(y_temp, [0.0001, 0.25, 0.75, 0.9999])
         # Get percentile and divide into class
         for i in range(len(percentile)-1):
             temp = (y_temp >= percentile[i]) & (y_temp <= percentile[i+1])
             y_dummy[temp] = i
         # z-score of the features
-        x_dummy = x_temp
+        x_dummy = zscore(x_temp, axis=0)
         x = np.vstack((x, x_dummy))
         y = np.vstack((y, y_dummy))
     # Balance the dataset
@@ -126,16 +125,13 @@ def create_feature_set(config):
 
     """
 
-    eye_features = ['fixation_rate','transition_ratio', 'glance_ratio', 'pupil_size']
-    brain_features = ['mental_workload', 'distraction']
+    features = ['transition_ratio', 'glance_ratio', 'pupil_size', 'mental_workload']
     predicted_variable = ['reaction_time']
-    features = [eye_features, brain_features,  brain_features+eye_features]
-    if config['include_task']:
-        features = [item + ['task_stage'] for item in features]
 
-    x, y = {}, {}
-    for i, feature in enumerate(features):
-        x[i], y[i] = create_classification_data(config, feature, predicted_variable)
+    if config['include_task_type']:
+        features = features + ['task_type']
+
+    x, y = create_classification_data(config, features, predicted_variable)
 
     return x, y
 
@@ -156,16 +152,12 @@ def reaction_time_classification(config):
     """
 
     X, Y = create_feature_set(config)
+    accuracy = []
+    for i in range(10):
+        x_train, x_test, y_train, y_test = model_selection.train_test_split(X, Y, test_size=config['test_size'])
+        clf = AdaBoostClassifier(DecisionTreeClassifier(max_depth=2), algorithm="SAMME",n_estimators=200)
+        clf.fit(x_train, y_train)
+        y_pred = clf.predict(x_test)
+        accuracy.append(accuracy_score(y_test, y_pred))
 
-    clf = {}
-    results = []
-    for key in X.keys():
-        x_train, x_test, y_train, y_test = model_selection.train_test_split(X[key], Y[key], test_size=config['test_size'])
-        kfold = model_selection.KFold(n_splits=3, random_state=2)
-        base_clf = DecisionTreeClassifier()
-        num_trees = 200
-        clf = BaggingClassifier(base_estimator=base_clf, n_estimators=num_trees, random_state=2)
-        output = model_selection.cross_val_score(clf, x_train, y_train.ravel(), cv=kfold)
-        results.append(output.mean())
-
-    return results
+    return np.asarray(accuracy)

@@ -13,6 +13,7 @@ from models.task_classification import task_type_classification
 from models.density_estimation import estimate_density
 from visualization.visualize import plot_detection_false_alarm
 from visualization.visualize import plot_reaction_time
+from visualization.visualize import plot_bar_reaction_time
 
 
 config = yaml.load(open('config.yml'))
@@ -34,6 +35,10 @@ with skip_run_code('skip', 'create_r_dataframe') as check, check():
     create_r_dataframe(config)
 
 
+with skip_run_code('run', 'bar_plot_reaction_time') as check, check():
+    plot_bar_reaction_time(config)
+
+
 with skip_run_code('skip', 't_sne_analysis') as check, check():
     t_sne(config)
 
@@ -42,17 +47,13 @@ with skip_run_code('skip', 'density_analysis') as check, check():
     estimate_density(config)
 
 
-with skip_run_code('run', 'features_selection') as check, check():
+with skip_run_code('skip', 'features_selection') as check, check():
     selected_features(config)
 
 
 with skip_run_code('skip', 'reaction_time_classification') as check, check():
-    run_results = []
-    for i in range(5):
-        results = reaction_time_classification(config)
-        run_results.append(results)
-    temp = np.asarray(run_results)
-    print(temp,  np.mean(temp, axis=0))
+    accuracy = reaction_time_classification(config)
+    print(accuracy)
 
 
 with skip_run_code('skip', 'task_type_classification') as check, check():

@@ -123,6 +123,10 @@ model1 <- lmer(rt ~ task_stage + (1 | subject), data = df)
 summary(model1)
 ```
 
+```{r}
+
+```
+
 
 ```{r Linear mixed models mental workload fixed effect}
 df$performance_level <- relevel(df$performance_level, 'low_performer')

@@ -2,7 +2,6 @@ import pickle
 from pathlib import Path
 import numpy as np
 import pandas as pd
-from ExGUtils import pyexg
 
 
 def read_dataframe(path):
@@ -22,7 +21,7 @@ def read_dataframe(path):
         data = pickle.load(f)
 
     return data
-            
+
 
 def model_logging(config, info, model):
 

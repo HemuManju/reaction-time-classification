@@ -7,10 +7,10 @@ import matplotlib.pyplot as plt
 from scipy.stats import invgauss
 from scipy.stats import zscore
 from sklearn.svm import SVC
+from sklearn.preprocessing import normalize
 from sklearn import model_selection
 from sklearn.ensemble import BaggingClassifier, RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
-from yellowbrick.features import RFECV
 from imblearn.under_sampling import RandomUnderSampler
 from .utils import read_dataframe
 
@@ -75,7 +75,8 @@ def create_classification_data(config, features, predicted_variable):
             temp = (y_temp >= percentile[i]) & (y_temp <= percentile[i+1])
             y_dummy[temp] = i
         # z-score of the features
-        x_dummy = zscore(x_temp[:,0:-1], axis=0)
+        # x_dummy = zscore(x_temp[:,0:-1], axis=0)
+        x_dummy = x_temp[:,0:-1]
         # Add back the task type
         x_dummy = np.hstack((x_dummy, np.expand_dims(x_dummy[: ,-1], axis=1)))
         x = np.vstack((x, x_dummy))
@@ -83,6 +84,8 @@ def create_classification_data(config, features, predicted_variable):
     # Balance the dataset
     rus = RandomUnderSampler()
     x, y = rus.fit_resample(x, y)
+    x = normalize(x, axis=0)
+    print(x.shape, y.shape)
 
     return x, y
 
@@ -119,8 +122,14 @@ def selected_features(config):
     clf = BaggingClassifier(base_estimator=base_clf, n_estimators=num_trees, random_state=2)
 
     cv = model_selection.StratifiedKFold(5)
-    oz = RFECV(base_clf, cv=cv, scoring='accuracy')
+    oz = RFECV(base_clf, cv=cv, scoring='accuracy', title='Recursive selection of features')
     oz.fit(x, y)
+    for tick in oz.ax.xaxis.get_major_ticks():
+        tick.label.set_fontsize(14)
+
+    for tick in oz.ax.yaxis.get_major_ticks():
+        tick.label.set_fontsize(14)
+
     oz.poof()
 
 
