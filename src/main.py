@@ -11,9 +11,7 @@ from features.features_selection import selected_features
 from models.rt_classification import reaction_time_classification
 from models.task_classification import task_type_classification
 from models.density_estimation import estimate_density
-from visualization.visualize import plot_detection_false_alarm
-from visualization.visualize import plot_reaction_time
-from visualization.visualize import plot_box_reaction_time
+from visualization.visualize import plot_classification_accuracy
 
 
 config = yaml.load(open('config.yml'))
@@ -59,7 +57,11 @@ with skip_run_code('skip', 'reaction_time_classification') as check, check():
     else:
         output['model_name'] = 'model_task_type_not_included'
     save_path = str(Path(__file__).parents[1] / config['save_path'])
-    model_log(output, save_path)
+    save_model_log(output, save_path)
+
+
+with skip_run_code('run', 'plot_classification_accuracy') as check, check():
+    plot_classification_accuracy(config)
 
 
 with skip_run_code('skip', 'task_type_classification') as check, check():

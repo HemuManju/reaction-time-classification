@@ -4,7 +4,47 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
-from .utils import read_dataframe, figure_asthetics
+from .utils import read_dataframe, figure_asthetics, read_model_log
+
+
+
+def plot_classification_accuracy(config):
+    """Plots the bar plot of classification accuracy
+
+    Parameters
+    ----------
+    config : yaml
+        The yaml configuration rate.
+
+    Returns
+    -------
+    None
+
+    """
+    # import data from
+    read_path = Path(__file__).parents[2] / config['save_path']
+    fname = [str(f) for f in read_path.iterdir() if f.suffix == '.pkl']
+    fname.sort()
+    fig, ax = plt.subplots()
+    ax.yaxis.grid(True)
+    labels = ['Included', 'Not included']
+    x_pos = np.arange(len(labels))
+
+    # Form the dataframe
+    for i, item in enumerate(fname):
+        data = read_model_log(item)
+        temp = np.sort(-data['accuracy'])[0:10]
+        accuracy, std = -np.mean(temp), -np.std(temp)
+        ax.bar(x_pos[i], accuracy, yerr=std, align='center', alpha=0.5, ecolor='black', capsize=10)
+
+    ax.axhline(y=0.33, xmin=0, xmax=1, linestyle='--')
+    ax.set_xticks(x_pos)
+    ax.set_xticklabels(labels)
+    ax.set_ylabel('Classification accuracy')
+    ax.set_xlabel('Task type information')
+    plt.show()
+
+    return None
 
 
 def plot_box_reaction_time(config):
@@ -21,20 +61,10 @@ def plot_box_reaction_time(config):
 
     """
     # Using the data from MATLAB file run
-    data = np.array(
-    [[0, 42.09, 3.54], [0.5, 50.33, 4.76], [0.1, 44.34, 3.69], [0.6, 51.63, 3.19], [0.2, 44.13, 1.60], [0.7, 49.71, 4.02]])
 
-    fig, ax = plt.subplots(figsize=(6, 4))
-    for i in range(0, 6, 2):
-        plt.bar(data[i:i + 2, 0]/2, data[i:i + 2, 1], yerr=data[i:i + 2, 2], capsize=4, width=0.04)
-    plt.legend(['All subjects', 'High performers', 'Low performers'])
-    plt.xlabel('Task information')
-    plt.xticks([0.05, 0.55], ['Not \n included', 'Included'])
-    plt.ylabel('Reaction time classification accuracy')
-    plt.subplots_adjust()
-    plt.show()
 
     return None
+
 
 def plot_detection_false_alarm(config):
     """Plots the detection rate and false alarm rate.

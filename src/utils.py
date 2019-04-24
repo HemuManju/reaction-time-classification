@@ -117,7 +117,7 @@ def read_dataframe(path):
     return data
 
 
-def model_log(info, save_path):
+def save_model_log(info, save_path):
     with open(save_path + '/' + info['model_name'] + '.pkl', 'wb') as f:
         pickle.dump(info, f, pickle.HIGHEST_PROTOCOL)
 

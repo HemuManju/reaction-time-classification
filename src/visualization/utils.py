@@ -22,6 +22,26 @@ def read_dataframe(path):
     return data
 
 
+def read_model_log(read_path):
+    """Read the model log.
+
+    Parameters
+    ----------
+    read_path : str
+        Path to read data from.
+
+    Returns
+    -------
+    dict
+        model log.
+
+    """
+    with open(read_path, 'rb') as handle:
+        data = pickle.load(handle)
+
+    return data
+
+
 def figure_asthetics(ax):
     """Change the asthetics of the given figure (operators in place).
 

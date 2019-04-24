@@ -1,4 +1,5 @@
 import yaml
+import collections
 import numpy as np
 import pandas as pd
 from pathlib import Path
@@ -63,13 +64,13 @@ def inverse_gaussian_percentile(data, percentiles):
     return np.asarray(value)
 
 
-def create_classification_data(config, features, predicted_variable):
+def create_classification_data(df, features, predicted_variable, config):
     """Create a classification dataset with features.
 
     Parameters
     ----------
-    config : yaml
-        The configuration file.
+    df : dataframe
+        Pandas dataframe.
     features : list
         A list of features from configuration file.
     predicted_variable : list
@@ -81,15 +82,11 @@ def create_classification_data(config, features, predicted_variable):
         Array of x and y with reaction time converted to classes.
 
     """
-
-    read_path = Path(__file__).parents[2] / config['processed_dataframe']
-    df = read_dataframe(read_path)
-
     #Initialise
     x = np.empty((0, len(features)))
     y = np.empty((0, len(predicted_variable)))
 
-    for subject in config['subjects']:
+    for subject in df['subject'].unique():
         df_temp = df[df['subject']==subject]
         x_temp = df_temp[features].values
         y_temp = df_temp[predicted_variable].values
@@ -125,8 +122,9 @@ def create_feature_set(config):
 
     """
 
-
     predicted_variable = ['reaction_time']
+
+    x, y = {}, {}
 
     if config['include_task_type']:
         features = ['transition_ratio', 'glance_ratio', 'mental_workload']
@@ -134,7 +132,12 @@ def create_feature_set(config):
     else:
         features = ['transition_ratio', 'glance_ratio']
 
-    x, y = create_classification_data(config, features, predicted_variable)
+    for i, item in enumerate(config['performance_level']):
+        read_path = Path(__file__).parents[2] / config['processed_dataframe']
+        df = read_dataframe(read_path)
+        if item!='all_subjects':
+            df = df[df['performance_level']==item]
+        x[item], y[item] = create_classification_data(df, features, predicted_variable, config)
 
     return x, y
 
@@ -155,22 +158,25 @@ def reaction_time_classification(config):
     """
 
     X, Y = create_feature_set(config)
-    accuracy, y_pred_array, y_true_array  = [], [], []
-    for i in range(20):
-        x_train, x_test, y_train, y_test = model_selection.train_test_split(X, Y, test_size=config['test_size'])
-        clf = AdaBoostClassifier(DecisionTreeClassifier(max_depth=2), algorithm="SAMME",n_estimators=200)
-        clf.fit(x_train, y_train.ravel())
-        y_pred = clf.predict(x_test)
-        y_pred_array.append(y_pred)
-        y_true_array.append(y_test)
-        accuracy.append(accuracy_score(y_test, y_pred))
+    output = collections.defaultdict(dict)
+    for key in X.keys():
+        accuracy, y_pred_array, y_true_array  = [], [], []
+        for i in range(20):
+            x_train, x_test, y_train, y_test = model_selection.train_test_split(X[key], Y[key], test_size=config['test_size'])
+            clf = AdaBoostClassifier(DecisionTreeClassifier(max_depth=2), algorithm="SAMME",n_estimators=200)
+            clf.fit(x_train, y_train.ravel())
+            y_pred = clf.predict(x_test)
+            y_pred_array.append(y_pred)
+            y_true_array.append(y_test)
+            accuracy.append(accuracy_score(y_test, y_pred))
 
-    # Select top 10
-    temp = -np.sort(-np.asarray(accuracy))[0:10]
-    print(np.mean(temp), np.std(temp))
-    output = {}
-    output['accuracy'] = np.asarray(accuracy)
-    output['prediction'] = np.asarray(y_pred_array)
-    output['true'] = np.asarray(y_true_array)
+        # Select top 10
+        temp = -np.sort(-np.asarray(accuracy))[0:10]
+        print(np.mean(temp), np.std(temp), key)
+
+        output[key]['accuracy'] = np.asarray(accuracy)
+        output[key]['prediction'] = np.asarray(y_pred_array)
+        output[key]['true'] = np.asarray(y_true_array)
+
 
     return output

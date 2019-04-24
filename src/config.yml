@@ -23,7 +23,8 @@ gamma:                   'scale'
 decision_function_shape: 'ovr'
 kernel:                  'rbf'
 test_size:               0.05
-include_task_type:       False
+include_task_type:       True
+performance_level:       ['all_subjects', 'low_performer', 'high_performer']
 
 # Path
 raw_data_path:           'data/raw/'

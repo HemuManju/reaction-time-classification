@@ -117,6 +117,7 @@ def create_dataframe(subjects, config):
 
     # Remove nan and zeros
     dataframe.dropna(inplace=True)
+    dataframe.loc[~(dataframe==0).all(axis=1)]
     dataframe = dataframe[dataframe['reaction_time']!=0]
     dataframe = dataframe[dataframe['task_stage']!=1]
 
