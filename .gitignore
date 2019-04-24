@@ -82,6 +82,11 @@ target/
 # Mac OS-specific storage files
 .DS_Store
 
+# R related stuff
+.Rhistory
+.RData
+
+
 # vim
 *.swp
 *.swo
