@@ -3,9 +3,10 @@ import seaborn as sb
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.stats import ttest_ind
 from sklearn.preprocessing import MinMaxScaler
-from .utils import read_dataframe, figure_asthetics, read_model_log
-
+from .utils import read_dataframe, figure_asthetics, read_model_log, annotate_significance
+sb.set()
 
 
 def plot_classification_accuracy(config):
@@ -24,24 +25,54 @@ def plot_classification_accuracy(config):
     # import data from
     read_path = Path(__file__).parents[2] / config['save_path']
     fname = [str(f) for f in read_path.iterdir() if f.suffix == '.pkl']
-    fname.sort()
-    fig, ax = plt.subplots()
-    ax.yaxis.grid(True)
-    labels = ['Included', 'Not included']
-    x_pos = np.arange(len(labels))
+    fname.sort(reverse=True)
 
+    labels = ['Not included', 'Included']
+
+    df = pd.DataFrame()
     # Form the dataframe
     for i, item in enumerate(fname):
         data = read_model_log(item)
-        temp = np.sort(-data['accuracy'])[0:10]
-        accuracy, std = -np.mean(temp), -np.std(temp)
-        ax.bar(x_pos[i], accuracy, yerr=std, align='center', alpha=0.5, ecolor='black', capsize=10)
+        for j, performance_level in enumerate(config['performance_level']):
+            temp_df = pd.DataFrame(columns=['accuracy', 'task_information', 'subject_information'])
+            temp = np.sort(-data[performance_level]['accuracy'])[0:10]
+            temp_df['accuracy'] = -temp
+            temp_df['task_information'] = labels[i]
+            temp_df['subject_information'] = performance_level
+            df = df.append(temp_df, ignore_index=True)
 
-    ax.axhline(y=0.33, xmin=0, xmax=1, linestyle='--')
-    ax.set_xticks(x_pos)
-    ax.set_xticklabels(labels)
-    ax.set_ylabel('Classification accuracy')
-    ax.set_xlabel('Task type information')
+    # perform statistical analysis
+    p_value = [1,1,1]
+    for j, performance_level in enumerate(config['performance_level']):
+        temp = df[df['subject_information']==performance_level]
+        dummy_1 = temp[temp['task_information']=='Included']
+        dummy_2 = temp[temp['task_information']=='Not included']
+        t, p_value[j] = ttest_ind(dummy_1['accuracy'].values, dummy_2['accuracy'].values)
+
+    # Bar plot
+    plt.rcParams['axes.labelweight'] = 'bold'
+    color = ['grey', 'darkgrey', 'lightgrey']
+    ax = sb.barplot(x='task_information', y='accuracy', hue='subject_information', data=df, capsize=0.05, linewidth=1, edgecolor=".2", palette=color)
+
+    hatches = ['+', '+', 'x', 'x', '\\', '\\']
+    for i, thisbar in enumerate(ax.patches):
+        # Set a different hatch for each bar
+        thisbar.set_hatch(3*hatches[i])
+
+
+    # Add annotations
+    x_pos = [-0.25, 0, 0.25]
+    y_pos = [0.6, 0.65, 0.70]
+    for i, p in enumerate(p_value):
+        x1, x2 = x_pos[i], x_pos[i]+1
+        annotate_significance(x1, x2, y_pos[i], p)
+
+    ax.axhline(y=0.33, xmin=0, xmax=1, linestyle='--', color='k', label='chance')
+    ax.tick_params(labelsize=14)
+    ax.legend(loc='center', bbox_to_anchor=(0.5, 1.2), ncol=2, fontsize=14)
+    ax.set_ylabel('Classification accuracy', fontsize=14)
+    ax.set_xlabel('Task type information', fontsize=14)
+    plt.tight_layout()
     plt.show()
 
     return None

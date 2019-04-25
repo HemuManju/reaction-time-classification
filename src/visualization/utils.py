@@ -1,6 +1,6 @@
 from pathlib import Path
 import pickle
-import matplotlib
+import matplotlib.pyplot as plt
 
 
 def read_dataframe(path):
@@ -56,5 +56,15 @@ def figure_asthetics(ax):
     ax.spines['top'].set_visible(False)
     ax.yaxis.set_ticks_position('left')
     ax.xaxis.set_ticks_position('bottom')
+
+    return None
+
+
+def annotate_significance(x1,x2,y, p_value):
+    h = 0.01
+    plt.plot([x1, x1, x2, x2], [y, y+h, y+h, y], lw=1.5, c='k')
+    if p_value < 0.001:
+        star = "***"
+    plt.text((x1+x2)*.5, y-h, star, ha='center', va='bottom', color='k', size=20)
 
     return None
