@@ -49,6 +49,7 @@ def plot_classification_accuracy(config):
         dummy_2 = temp[temp['task_information']=='Not included']
         t, p_value[j] = ttest_ind(dummy_1['accuracy'].values, dummy_2['accuracy'].values)
 
+    plt.figure(figsize=(5, 6), dpi=80)
     # Bar plot
     plt.rcParams['axes.labelweight'] = 'bold'
     color = ['darkgrey', 'lightgrey', 'whitesmoke']
@@ -59,14 +60,14 @@ def plot_classification_accuracy(config):
 
     # Add annotations
     x_pos = [-0.25, 0, 0.25]
-    y_pos = [0.5, 0.55, 0.60]
+    y_pos = [0.65, 0.70, 0.75]
     for i, p in enumerate(p_value):
         x1, x2 = x_pos[i], x_pos[i]+1
         annotate_significance(x1, x2, y_pos[i], p)
 
     ax.axhline(y=0.33, xmin=0, xmax=1, linestyle='--', color='k', label='chance')
     ax.tick_params(labelsize=14)
-    ax.legend(loc='center', bbox_to_anchor=(0.5, 1.2), ncol=2, fontsize=14)
+    ax.legend(loc='center', bbox_to_anchor=(0.5, 1.1), ncol=2, fontsize=14)
     ax.set_ylabel('Classification accuracy', fontsize=14)
     ax.set_xlabel('Task type information', fontsize=14)
     plt.tight_layout()

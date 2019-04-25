@@ -85,7 +85,7 @@ def annotate_significance(x1,x2,y, p):
         star = "**"
     if star:
         plt.plot([x1, x1, x2, x2], [y, y+h, y+h, y], lw=1.5, c='k')
-        plt.text((x1+x2)*.5, y-h, star, ha='center', va='bottom', color='k', size=20)
+        plt.text((x1+x2)*.5, y-h/2, star, ha='center', va='bottom', color='k', size=20)
 
     return None
 
