@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import ttest_ind
 from sklearn.preprocessing import MinMaxScaler
-from .utils import read_dataframe, figure_asthetics, read_model_log, annotate_significance
+from .utils import *
 sb.set()
 
 
@@ -51,18 +51,15 @@ def plot_classification_accuracy(config):
 
     # Bar plot
     plt.rcParams['axes.labelweight'] = 'bold'
-    color = ['grey', 'darkgrey', 'lightgrey']
+    color = ['darkgrey', 'lightgrey', 'whitesmoke']
     ax = sb.barplot(x='task_information', y='accuracy', hue='subject_information', data=df, capsize=0.05, linewidth=1, edgecolor=".2", palette=color)
 
-    hatches = ['+', '+', 'x', 'x', '\\', '\\']
-    for i, thisbar in enumerate(ax.patches):
-        # Set a different hatch for each bar
-        thisbar.set_hatch(3*hatches[i])
-
+    # Add hatches
+    # add_hatches(ax)
 
     # Add annotations
     x_pos = [-0.25, 0, 0.25]
-    y_pos = [0.6, 0.65, 0.70]
+    y_pos = [0.5, 0.55, 0.60]
     for i, p in enumerate(p_value):
         x1, x2 = x_pos[i], x_pos[i]+1
         annotate_significance(x1, x2, y_pos[i], p)

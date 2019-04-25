@@ -60,11 +60,53 @@ def figure_asthetics(ax):
     return None
 
 
-def annotate_significance(x1,x2,y, p_value):
+def annotate_significance(x1,x2,y, p):
+    """Add significance annotations over a plot.
+
+    Parameters
+    ----------
+    x1 : float
+        x position of factor 1.
+    x2 : float
+        x position of factor 2.
+    y : float
+        Outcome variable.
+
+    Returns
+    -------
+    None
+
+    """
     h = 0.01
-    plt.plot([x1, x1, x2, x2], [y, y+h, y+h, y], lw=1.5, c='k')
-    if p_value < 0.001:
+    star = []
+    if p < 0.001:
         star = "***"
-    plt.text((x1+x2)*.5, y-h, star, ha='center', va='bottom', color='k', size=20)
+    elif p < 0.01:
+        star = "**"
+    if star:
+        plt.plot([x1, x1, x2, x2], [y, y+h, y+h, y], lw=1.5, c='k')
+        plt.text((x1+x2)*.5, y-h, star, ha='center', va='bottom', color='k', size=20)
+
+    return None
+
+
+def add_hatches(ax):
+    """Add hatches to the axes.
+
+    Parameters
+    ----------
+    ax : matplotlib axes
+
+    Returns
+    -------
+    None
+        Description of returned object.
+
+    """
+
+    hatches = ['\\', '\\', 'x', 'x', '+', '+']
+    for i, thisbar in enumerate(ax.patches):
+        # Set a different hatch for each bar
+        thisbar.set_hatch(3*hatches[i])
 
     return None
