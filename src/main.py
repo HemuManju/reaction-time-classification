@@ -49,7 +49,7 @@ with skip_run_code('skip', 'features_selection') as check, check():
     selected_features(config)
 
 
-with skip_run_code('skip', 'reaction_time_classification') as check, check():
+with skip_run_code('run', 'reaction_time_classification') as check, check():
     output = reaction_time_classification(config)
     # Append more information to model
     if config['include_task_type']:
@@ -57,10 +57,10 @@ with skip_run_code('skip', 'reaction_time_classification') as check, check():
     else:
         output['model_name'] = 'model_task_type_not_included'
     save_path = str(Path(__file__).parents[1] / config['save_path'])
-    save_model_log(output, save_path)
+    # save_model_log(output, save_path)
 
 
-with skip_run_code('run', 'plot_classification_accuracy') as check, check():
+with skip_run_code('skip', 'plot_classification_accuracy') as check, check():
     plot_classification_accuracy(config)
 
 

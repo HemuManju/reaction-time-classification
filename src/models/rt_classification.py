@@ -5,7 +5,7 @@ import pandas as pd
 from pathlib import Path
 from sklearn import svm
 from scipy.stats import invgauss, norm, zscore
-from sklearn import model_selection
+from sklearn.model_selection import train_test_split
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
@@ -65,7 +65,7 @@ def inverse_gaussian_percentile(data, percentiles):
 
 
 def create_classification_data(df, features, predicted_variable, config):
-    """Create a classification dataset with features.
+    """Create a classification dataset with features and convert continous value of reaction time to classes by fitting an inverse gaussian distribution.
 
     Parameters
     ----------
@@ -108,7 +108,7 @@ def create_classification_data(df, features, predicted_variable, config):
 
 
 def create_feature_set(config):
-    """Generate different combination of features from eye, pupil, and brain.
+    """Generate different combination of features with task type and without task type.
 
     Parameters
     ----------
@@ -127,10 +127,9 @@ def create_feature_set(config):
     x, y = {}, {}
 
     if config['include_task_type']:
-        features = ['transition_ratio', 'glance_ratio', 'mental_workload']
-        features = features + ['task_type']
+        features = config['classification_features'] + ['task_type']
     else:
-        features = ['transition_ratio', 'glance_ratio']
+        features = config['classification_features']
 
     for i, item in enumerate(config['performance_level']):
         read_path = Path(__file__).parents[2] / config['processed_dataframe']
@@ -143,7 +142,7 @@ def create_feature_set(config):
 
 
 def reaction_time_classification(config):
-    """Perform reaction time classification with different features.
+    """Perform reaction time classification with different features using Adaptive boosting of decision trees.
 
     Parameters
     ----------
@@ -162,9 +161,13 @@ def reaction_time_classification(config):
     for key in X.keys():
         accuracy, y_pred_array, y_true_array  = [], [], []
         for i in range(20):
-            x_train, x_test, y_train, y_test = model_selection.train_test_split(X[key], Y[key], test_size=config['test_size'])
+            x_train, x_test, y_train, y_test = train_test_split(X[key], Y[key], test_size=config['test_size'])
+            # Classifier
+            estimators = config['estimators']
+            depth = config['max_depth']
             clf = AdaBoostClassifier(DecisionTreeClassifier(max_depth=2), algorithm="SAMME",n_estimators=200)
             clf.fit(x_train, y_train.ravel())
+            # Predictions
             y_pred = clf.predict(x_test)
             y_pred_array.append(y_pred)
             y_true_array.append(y_test)
@@ -172,11 +175,11 @@ def reaction_time_classification(config):
 
         # Select top 10
         temp = -np.sort(-np.asarray(accuracy))[0:10]
-        print(np.mean(temp), np.std(temp), key)
-
+        print(np.mean(temp), np.std(temp), key) # Sanity check
+        # Model to save
+        output[key]['trained_model'] = clf
         output[key]['accuracy'] = np.asarray(accuracy)
         output[key]['prediction'] = np.asarray(y_pred_array)
         output[key]['true'] = np.asarray(y_true_array)
-
 
     return output

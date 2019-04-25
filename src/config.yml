@@ -1,5 +1,5 @@
 ##---------------------------------------------------------------------##
-## Experiment 0
+## Global parameters
 # EEG data parameters
 epoch_length:            2
 n_electrodes:            9
@@ -16,15 +16,16 @@ novice:                  ['7703','7000','7705','7706','6004','2006',
 test_subjects:           []
 features:                ['detected', 'drone_number' , 'target_shape', 'time', 'task_stage','reaction_time','fixation_rate','situation_awareness',
 'transition_ratio', 'glance_ratio', 'pupil_size','mental_workload', 'avg_mental_workload', 'high_engagement', 'low_engagement', 'distraction']
-task_type:               ['no_force', 'error_reduction', 'error_augmentation']
 
-# Classification parameters for SVM
-gamma:                   'scale'
-decision_function_shape: 'ovr'
-kernel:                  'rbf'
-test_size:               0.05
-include_task_type:       True
+##---------------------------------------------------------------------##
+## Experiment 0
+# Classification parameters for Decision tree classifier
+estimators:              200
+max_depth:               2
+test_size:               0.25
+include_task_type:       False
 performance_level:       ['all_subjects', 'low_performer', 'high_performer']
+classification_features: ['transition_ratio', 'glance_ratio', 'mental_workload']
 
 # Path
 raw_data_path:           'data/raw/'
@@ -32,5 +33,23 @@ processed_dataset:       'data/processed/processed_exp_0_dataset.h5'
 secondary_dataframe:     'data/processed/secondary_exp_0_dataframe.pkl'
 processed_dataframe:     'data/processed/processed_exp_0_dataframe.pkl'
 r_dataframe:             'data/r_data/exp_0_dataframe.RData'
-save_path :              'models/'
+save_path :              'models/experiment_0/'
+
 ##---------------------------------------------------------------------##
+# ## Experiment_1
+#
+# # Classification parameters for SVM
+# estimators:              200
+# max_depth:               2
+# test_size:               0.30
+# include_task_type:     True
+# performance_level:     ['all_subjects', 'low_performer', 'high_performer']
+# classification_features: ['transition_ratio', 'glance_ratio', 'fixation_rate','pupil_size']
+#
+# # Path
+# raw_data_path:         'data/raw/'
+# processed_dataset:     'data/processed/processed_exp_1_dataset.h5'
+# secondary_dataframe:   'data/processed/secondary_exp_1_dataframe.pkl'
+# processed_dataframe:   'data/processed/processed_exp_1_dataframe.pkl'
+# r_dataframe:           'data/r_data/exp_1_dataframe.RData'
+# save_path :            'models/experiment_1/'
