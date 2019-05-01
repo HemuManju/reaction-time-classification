@@ -36,39 +36,39 @@ features:                ['detected', 'drone_number' , 'target_shape', 'time', '
 # save_path :            'models/experiment_0/'
 
 ##---------------------------------------------------------------------##
-## Experiment_1
-# Using only eye features
-# Classification parameters for SVM
-estimators:            200
-max_depth:             2
-test_size:             0.25
-include_task_type:     False
-performance_level:     ['all_subjects', 'low_performer', 'high_performer']
-classification_features: ['transition_ratio', 'glance_ratio', 'fixation_rate','pupil_size']
-
-# Path
-raw_data_path:         'data/raw/'
-processed_dataset:     'data/processed/processed_exp_0_dataset.h5'
-secondary_dataframe:   'data/processed/secondary_exp_0_dataframe.pkl'
-processed_dataframe:   'data/processed/processed_exp_0_dataframe.pkl'
-r_dataframe:           'data/r_data/exp_0_dataframe.RData'
-save_path :            'models/experiment_1/'
-
-##---------------------------------------------------------------------##
-# ## Experiment_2
-# # Using only cognitive features
+# ## Experiment_1
+# # Using only eye features
 # # Classification parameters for SVM
-# estimators:              200
-# max_depth:               2
-# test_size:               0.25
-# include_task_type:       True
-# performance_level:       ['all_subjects', 'low_performer', 'high_performer']
-# classification_features: ['mental_workload', 'high_engagement', 'distraction']
+# estimators:            200
+# max_depth:             2
+# test_size:             0.25
+# include_task_type:     False
+# performance_level:     ['all_subjects', 'low_performer', 'high_performer']
+# classification_features: ['transition_ratio', 'glance_ratio', 'fixation_rate','pupil_size']
 #
 # # Path
-# raw_data_path:           'data/raw/'
-# processed_dataset:       'data/processed/processed_exp_0_dataset.h5'
-# secondary_dataframe:     'data/processed/secondary_exp_0_dataframe.pkl'
-# processed_dataframe:     'data/processed/processed_exp_0_dataframe.pkl'
-# r_dataframe:             'data/r_data/exp_0_dataframe.RData'
-# save_path :              'models/experiment_2/'
+# raw_data_path:         'data/raw/'
+# processed_dataset:     'data/processed/processed_exp_0_dataset.h5'
+# secondary_dataframe:   'data/processed/secondary_exp_0_dataframe.pkl'
+# processed_dataframe:   'data/processed/processed_exp_0_dataframe.pkl'
+# r_dataframe:           'data/r_data/exp_0_dataframe.RData'
+# save_path :            'models/experiment_1/'
+
+##---------------------------------------------------------------------##
+## Experiment_2
+# Using only cognitive features
+# Classification parameters for SVM
+estimators:              200
+max_depth:               2
+test_size:               0.25
+include_task_type:       True
+performance_level:       ['all_subjects', 'low_performer', 'high_performer']
+classification_features: ['mental_workload', 'high_engagement', 'distraction']
+
+# Path
+raw_data_path:           'data/raw/'
+processed_dataset:       'data/processed/processed_exp_0_dataset.h5'
+secondary_dataframe:     'data/processed/secondary_exp_0_dataframe.pkl'
+processed_dataframe:     'data/processed/processed_exp_0_dataframe.pkl'
+r_dataframe:             'data/r_data/exp_0_dataframe.RData'
+save_path :              'models/experiment_2/'
