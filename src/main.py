@@ -11,7 +11,7 @@ from features.features_selection import selected_features
 from models.rt_classification import reaction_time_classification
 from models.task_classification import task_type_classification
 from models.density_estimation import estimate_density
-from visualization.visualize import plot_classification_accuracy
+from visualization.visualize import plot_classification_accuracy, plot_reaction_time
 
 
 config = yaml.load(open('config.yml'))
@@ -60,7 +60,7 @@ with skip_run_code('skip', 'reaction_time_classification') as check, check():
     save_model_log(output, save_path)
 
 
-with skip_run_code('run', 'plot_classification_accuracy') as check, check():
+with skip_run_code('skip', 'plot_classification_accuracy') as check, check():
     plot_classification_accuracy(config)
 
 
@@ -69,7 +69,7 @@ with skip_run_code('skip', 'task_type_classification') as check, check():
 
 
 with skip_run_code('skip', 'plot_reaction_time') as check, check():
-    plot_reaction_time(config['subjects'][0], config)
+    plot_reaction_time(config['subjects'][1], config)
 
 
 with skip_run_code('skip', 'plot_detection_false_alarm') as check, check():

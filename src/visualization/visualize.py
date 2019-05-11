@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import ttest_ind
 from sklearn.preprocessing import MinMaxScaler
+from scipy import stats
 from .utils import *
 sb.set()
 
@@ -156,14 +157,28 @@ def plot_reaction_time(subject, config):
     f, (ax_box, ax_hist) = plt.subplots(2, sharex=True, gridspec_kw={"height_ratios": (.15, .85)})
 
     # Add a graph in each part
-    sb.set()
-    sb.boxplot(subject_df['reaction_time'], ax=ax_box)
-    sb.distplot(subject_df['reaction_time'], ax=ax_hist)
+    sb.boxplot(subject_df['reaction_time'].values-0.015, ax=ax_box)
+    sb.distplot(subject_df['reaction_time'], ax=ax_hist, kde=False, norm_hist=True)
+
+    # Fit the inverse gaussian distribution
+    xt = plt.xticks()[0]
+    xmin, xmax = min(xt), max(xt) + 0.1
+    lnspc = np.linspace(xmin, xmax, 200)
+    result = stats.invgauss.fit(subject_df['reaction_time'].values)
+    pdf_invgauss = stats.invgauss.pdf(lnspc, mu=result[0], loc=result[1], scale=result[2])
+    plt.plot(lnspc, pdf_invgauss, color='#465F95')
+
+    # Append the 25, 75 percentile
+    x_25 = stats.invgauss.ppf(0.25, mu=result[0], loc=result[1], scale=result[2])
+    x_75 = stats.invgauss.ppf(0.75, mu=result[0], loc=result[1], scale=result[2])
+    plt.axvline(x=x_25, color='#3C3D40')
+    plt.axvline(x=x_75, color='#3C3D40')
 
     # Remove x axis name for the boxplot
     ax_box.set(xlabel='')
     ax_hist.set_axisbelow(True)
-    ax_hist.grid()
+    # ax_hist.grid()
+    plt.xlim([0.15,1.2])
     plt.xlabel('Reaction time')
     plt.tight_layout()
     plt.show()
