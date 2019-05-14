@@ -31,7 +31,7 @@ class SkipWith(Exception):
 
 
 @contextmanager
-def skip_run_code(flag, f):
+def skip_run(flag, f):
     """To skip a block of code.
 
     Parameters
@@ -54,6 +54,7 @@ def skip_run_code(flag, f):
         else:
             print('Running the block: ' + f)
             yield
+
     try:
         yield check_active
     except SkipWith:

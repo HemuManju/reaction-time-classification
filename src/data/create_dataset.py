@@ -5,6 +5,7 @@ from pathlib import Path
 import feather
 import pickle
 
+
 def read_dataframe(path):
     """Save the dataset.
 
@@ -39,7 +40,8 @@ def read_matlab_file(config):
 
     """
 
-    path = Path(__file__).parents[2] / config['raw_data_path'] / 'matlab_data.mat'
+    path = Path(
+        __file__).parents[2] / config['raw_data_path'] / 'matlab_data.mat'
     data = sio.loadmat(str(path))['local_data']
 
     return data
@@ -59,11 +61,12 @@ def create_secondary_dataframe(config):
 
     """
 
-    path = Path(__file__).parents[2] / config['raw_data_path'] / 'secondary_data.xls'
+    path = Path(
+        __file__).parents[2] / config['raw_data_path'] / 'secondary_data.xls'
     dataframe = pd.read_excel(str(path))
     # Add the performance level
     experts_id = config['expert_id']
-    performance = ['low_performer']*len(config['subjects'])
+    performance = ['low_performer'] * len(config['subjects'])
     for i, _ in enumerate(performance):
         if i in experts_id:
             performance[i] = 'high_performer'
@@ -93,8 +96,9 @@ def create_dataframe(subjects, config):
     data = {}
     dataframe = pd.DataFrame()
     for i, subject in enumerate(subjects):
-        data[subject] = matlab_data[:,:,i]
-        df_temp = pd.DataFrame(matlab_data[:,:,i], columns = config['features'])
+        data[subject] = matlab_data[:, :, i]
+        df_temp = pd.DataFrame(matlab_data[:, :, i],
+                               columns=config['features'])
         df_temp['subject'] = subject
         # Append task type
         df_temp.loc[df_temp.task_stage <= 3, 'task_type'] = 0
@@ -102,11 +106,15 @@ def create_dataframe(subjects, config):
 
         # Append task difficulty
         # Visual
-        df_temp.loc[(df_temp.task_stage<=2) & (df_temp.task_type==0), 'task_difficulty'] = 1
-        df_temp.loc[(df_temp.task_stage==3) & (df_temp.task_type==0), 'task_difficulty'] = 2
+        df_temp.loc[(df_temp.task_stage <= 2) &
+                    (df_temp.task_type == 0), 'task_difficulty'] = 1
+        df_temp.loc[(df_temp.task_stage == 3) &
+                    (df_temp.task_type == 0), 'task_difficulty'] = 2
         # Motor
-        df_temp.loc[(df_temp.task_stage==4) & (df_temp.task_type==1), 'task_difficulty'] = 1
-        df_temp.loc[(df_temp.task_stage==5) & (df_temp.task_type==1), 'task_difficulty'] = 2
+        df_temp.loc[(df_temp.task_stage == 4) &
+                    (df_temp.task_type == 1), 'task_difficulty'] = 1
+        df_temp.loc[(df_temp.task_stage == 5) &
+                    (df_temp.task_type == 1), 'task_difficulty'] = 2
 
         if subject in config['expert']:
             df_temp['performance_level'] = 'high_performer'
@@ -117,9 +125,9 @@ def create_dataframe(subjects, config):
 
     # Remove nan and zeros
     dataframe.dropna(inplace=True)
-    dataframe.loc[~(dataframe==0).all(axis=1)]
-    dataframe = dataframe[dataframe['reaction_time']!=0]
-    dataframe = dataframe[dataframe['task_stage']!=1]
+    dataframe.loc[~(dataframe == 0).all(axis=1)]
+    dataframe = dataframe[dataframe['reaction_time'] != 0]
+    dataframe = dataframe[dataframe['task_stage'] != 1]
 
     return data, dataframe, secondary_dataframe
 

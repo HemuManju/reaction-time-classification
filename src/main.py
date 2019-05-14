@@ -13,12 +13,11 @@ from models.task_classification import task_type_classification
 from models.density_estimation import estimate_density
 from visualization.visualize import plot_classification_accuracy, plot_reaction_time
 
-
 config = yaml.load(open('config.yml'))
 
-
-with skip_run_code('skip', 'create_dataset') as check, check():
-    data, dataframe, secondary_dataframe = create_dataframe(config['subjects'], config)
+with skip_run('skip', 'create_dataset') as check, check():
+    data, dataframe, secondary_dataframe = create_dataframe(
+        config['subjects'], config)
     save_path = Path(__file__).parents[1] / config['processed_dataframe']
     save_dataframe(str(save_path), dataframe, save=True)
 
@@ -28,28 +27,22 @@ with skip_run_code('skip', 'create_dataset') as check, check():
     save_path = Path(__file__).parents[1] / config['processed_dataset']
     save_dataset(str(save_path), data, save=True)
 
-
-with skip_run_code('skip', 'create_r_dataframe') as check, check():
+with skip_run('skip', 'create_r_dataframe') as check, check():
     create_r_dataframe(config)
 
-
-with skip_run_code('skip', 'box_plot_reaction_time') as check, check():
+with skip_run('skip', 'box_plot_reaction_time') as check, check():
     plot_box_reaction_time(config)
 
-
-with skip_run_code('skip', 't_sne_analysis') as check, check():
+with skip_run('skip', 't_sne_analysis') as check, check():
     t_sne(config)
 
-
-with skip_run_code('skip', 'density_analysis') as check, check():
+with skip_run('skip', 'density_analysis') as check, check():
     estimate_density(config)
 
-
-with skip_run_code('skip', 'features_selection') as check, check():
+with skip_run('skip', 'features_selection') as check, check():
     selected_features(config)
 
-
-with skip_run_code('skip', 'reaction_time_classification') as check, check():
+with skip_run('skip', 'reaction_time_classification') as check, check():
     output = reaction_time_classification(config)
     # Append more information to model
     if config['include_task_type']:
@@ -59,18 +52,14 @@ with skip_run_code('skip', 'reaction_time_classification') as check, check():
     save_path = str(Path(__file__).parents[1] / config['save_path'])
     save_model_log(output, save_path)
 
-
-with skip_run_code('skip', 'plot_classification_accuracy') as check, check():
+with skip_run('skip', 'plot_classification_accuracy') as check, check():
     plot_classification_accuracy(config)
 
-
-with skip_run_code('skip', 'task_type_classification') as check, check():
+with skip_run('skip', 'task_type_classification') as check, check():
     task_type_classification(config)
 
-
-with skip_run_code('skip', 'plot_reaction_time') as check, check():
+with skip_run('skip', 'plot_reaction_time') as check, check():
     plot_reaction_time(config['subjects'][1], config)
-
 
 with skip_run_code('skip', 'plot_detection_false_alarm') as check, check():
     plot_detection_false_alarm_rate(config)

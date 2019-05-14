@@ -24,7 +24,7 @@ r_dataframe_path <- here(config$r_dataframe)
 df <- read_feather(r_dataframe_path)
 df <- na.omit(df)
 
-# Convert to factor 
+# Convert to factor
 factors <- c("task_stage", "fixation_rate", "transition_ratio", "glance_ratio", "pupil_size", "avg_mental_workload", "high_engagement", "low_engagement", "distraction", "subject", "performance_level")
 df[factors] <- lapply(df[factors], as.factor)
 df
@@ -43,41 +43,41 @@ aic.output <- function(df){
   fit.weibull <- fitdist(rt, "weibull");
   fit.gamma <- fitdist(rt, "gamma");
 
-  
+
   # Custom inverse gauss distribution fit
   dinvgauss <- function(x, u, l){
     ifelse(t==0, 0.0, sqrt(l/(2*pi*x^3))*exp(-l*(x-u)^2/(2*u^2*x)));
   }
-  
+
   pinvgauss <- function(q, u, l){
     integrate(dinvgauss, 0, q, u, l, abs.tol=1E-5)$value;
   }
-  
+
   qinvgauss <-  function(p, u, l){
     uniroot(function(x){pinvgauss(x, u, l) - p}, c(0, 5))$root;
   }
 
   fit.invgauss <- fitdist(rt,"invgauss", start=list(u=0.5,l=1.5));
-  
+
   # Custom reci-normal distribution fit
   drecinorm <- function(x, u, s){
     ifelse(t==0, 0.0, 1/(x^2*s*sqrt(2*pi))*exp(-(u*x-1)^2/(2*x^2*s^2)));
   }
-  
+
   precinorm <- function(q, u, s){
     integrate(drecinorm, 0, q, u, s, abs.tol=1E-5)$value;
   }
-  
+
   qrecinorm <-  function(p, u, s){
     uniroot(function(x){precinorm(x, u, s) - p}, c(0, 5))$root;
   }
 
   fit.recinorm <- fitdist(rt,"recinorm", start=list(u=0.5,s=1.5));
-  
+
   output <-  c(fit.normal$aic, fit.weibull$aic, fit.gamma$aic, fit.invgauss$aic, fit.recinorm$aic)
-  
+
 return(output)
-  
+
 }
 
 out <-  c()
@@ -103,7 +103,7 @@ colMeans(processed)
 rt <- df$reaction_time
 
 plotdist(rt, histo = TRUE, demp = TRUE)
- 
+
 # Distribution analysis
 qqp(rt, "lnorm")
 qqp(rt, "norm")
@@ -117,10 +117,10 @@ qqp(rt, "gamma", shape = gamma$estimate[[1]], rate = gamma$estimate[[2]])
 # Cullen and Frey graph
 descdist(rt, discrete = FALSE, boot = 1000)
 
-# Plot fitting 
+# Plot fitting
 plot(fit.gamma)
 plot(fit.exgauss)
- 
+
 ```
 
 
@@ -148,4 +148,3 @@ summary(model2)
 model3 <- lmer(rt ~ 1 + (1 | subject), data = df)
 summary(model3)
 ```
-

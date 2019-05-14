@@ -33,10 +33,11 @@ def recinormal(rt, mu, sigma):
 
     """
 
-    if sigma==0:
+    if sigma == 0:
         f = np.zeros_like(rt)
     else:
-        f = 1/(rt**2*sigma*np.sqrt(2*np.pi))*np.exp(-(mu*rt-1)**2/(2*rt**2*sigma**2))
+        f = 1 / (rt**2 * sigma * np.sqrt(2 * np.pi)) * np.exp(
+            -(mu * rt - 1)**2 / (2 * rt**2 * sigma**2))
     return f
 
 
@@ -59,7 +60,11 @@ def inverse_gaussian_percentile(data, percentiles):
     result = invgauss.fit(data)
     value = []
     for percentile in percentiles:
-        value.append(invgauss.ppf(percentile, mu=result[0], loc=result[1], scale=result[2]))
+        value.append(
+            invgauss.ppf(percentile,
+                         mu=result[0],
+                         loc=result[1],
+                         scale=result[2]))
 
     return np.asarray(value)
 
@@ -87,14 +92,15 @@ def create_classification_data(df, features, predicted_variable, config):
     y = np.empty((0, len(predicted_variable)))
 
     for subject in df['subject'].unique():
-        df_temp = df[df['subject']==subject]
+        df_temp = df[df['subject'] == subject]
         x_temp = df_temp[features].values
         y_temp = df_temp[predicted_variable].values
         y_dummy = y_temp.copy()
-        percentile = inverse_gaussian_percentile(y_temp, [0.0001, 0.25, 0.75, 0.9999])
+        percentile = inverse_gaussian_percentile(y_temp,
+                                                 [0.0001, 0.25, 0.75, 0.9999])
         # Get percentile and divide into class
-        for i in range(len(percentile)-1):
-            temp = (y_temp >= percentile[i]) & (y_temp <= percentile[i+1])
+        for i in range(len(percentile) - 1):
+            temp = (y_temp >= percentile[i]) & (y_temp <= percentile[i + 1])
             y_dummy[temp] = i
         # z-score of the features
         x_dummy = x_temp
@@ -134,9 +140,11 @@ def create_feature_set(config):
     for i, item in enumerate(config['performance_level']):
         read_path = Path(__file__).parents[2] / config['processed_dataframe']
         df = read_dataframe(read_path)
-        if item!='all_subjects':
-            df = df[df['performance_level']==item]
-        x[item], y[item] = create_classification_data(df, features, predicted_variable, config)
+        if item != 'all_subjects':
+            df = df[df['performance_level'] == item]
+        x[item], y[item] = create_classification_data(df, features,
+                                                      predicted_variable,
+                                                      config)
 
     return x, y
 
@@ -159,13 +167,16 @@ def reaction_time_classification(config):
     X, Y = create_feature_set(config)
     output = collections.defaultdict(dict)
     for key in X.keys():
-        accuracy, y_pred_array, y_true_array  = [], [], []
+        accuracy, y_pred_array, y_true_array = [], [], []
         for i in range(20):
-            x_train, x_test, y_train, y_test = train_test_split(X[key], Y[key], test_size=config['test_size'])
+            x_train, x_test, y_train, y_test = train_test_split(
+                X[key], Y[key], test_size=config['test_size'])
             # Classifier
             estimators = config['estimators']
             depth = config['max_depth']
-            clf = AdaBoostClassifier(DecisionTreeClassifier(max_depth=2), algorithm="SAMME",n_estimators=200)
+            clf = AdaBoostClassifier(DecisionTreeClassifier(max_depth=2),
+                                     algorithm="SAMME",
+                                     n_estimators=200)
             clf.fit(x_train, y_train.ravel())
             # Predictions
             y_pred = clf.predict(x_test)
@@ -175,7 +186,7 @@ def reaction_time_classification(config):
 
         # Select top 10
         temp = -np.sort(-np.asarray(accuracy))[0:10]
-        print(np.mean(temp), np.std(temp), key) # Sanity check
+        print(np.mean(temp), np.std(temp), key)  # Sanity check
         # Model to save
         output[key]['trained_model'] = clf
         output[key]['accuracy'] = np.asarray(accuracy)

@@ -34,7 +34,11 @@ def inverse_gaussian_percentile(data, percentiles):
     result = invgauss.fit(data)
     value = []
     for percentile in percentiles:
-        value.append(invgauss.ppf(percentile, mu=result[0], loc=result[1], scale=result[2]))
+        value.append(
+            invgauss.ppf(percentile,
+                         mu=result[0],
+                         loc=result[1],
+                         scale=result[2]))
 
     return np.asarray(value)
 
@@ -65,20 +69,21 @@ def create_classification_data(config, features, predicted_variable):
     y = np.empty((0, len(predicted_variable)))
 
     for subject in config['subjects']:
-        df_temp = df[df['subject']==subject]
+        df_temp = df[df['subject'] == subject]
         x_temp = df_temp[features].values
         y_temp = df_temp[predicted_variable].values
         y_dummy = y_temp.copy()
-        percentile = inverse_gaussian_percentile(y_temp, [0.0001, 0.25, 0.75, 0.9999])
+        percentile = inverse_gaussian_percentile(y_temp,
+                                                 [0.0001, 0.25, 0.75, 0.9999])
         # Get percentile and divide into class
-        for i in range(len(percentile)-1):
-            temp = (y_temp >= percentile[i]) & (y_temp <= percentile[i+1])
+        for i in range(len(percentile) - 1):
+            temp = (y_temp >= percentile[i]) & (y_temp <= percentile[i + 1])
             y_dummy[temp] = i
         # z-score of the features
         # x_dummy = zscore(x_temp[:,0:-1], axis=0)
-        x_dummy = x_temp[:,0:-1]
+        x_dummy = x_temp[:, 0:-1]
         # Add back the task type
-        x_dummy = np.hstack((x_dummy, np.expand_dims(x_dummy[: ,-1], axis=1)))
+        x_dummy = np.hstack((x_dummy, np.expand_dims(x_dummy[:, -1], axis=1)))
         x = np.vstack((x, x_dummy))
         y = np.vstack((y, y_dummy))
     # Balance the dataset
@@ -105,8 +110,12 @@ def selected_features(config):
 
     """
 
-    eye_features = ['fixation_rate','transition_ratio', 'glance_ratio', 'pupil_size']
-    brain_features = ['mental_workload', 'high_engagement', 'low_engagement', 'distraction']
+    eye_features = [
+        'fixation_rate', 'transition_ratio', 'glance_ratio', 'pupil_size'
+    ]
+    brain_features = [
+        'mental_workload', 'high_engagement', 'low_engagement', 'distraction'
+    ]
     predicted_variable = ['reaction_time']
     features = eye_features + brain_features
 
@@ -119,10 +128,15 @@ def selected_features(config):
     # Estimator
     base_clf = DecisionTreeClassifier(max_depth=2)
     num_trees = 200
-    clf = BaggingClassifier(base_estimator=base_clf, n_estimators=num_trees, random_state=2)
+    clf = BaggingClassifier(base_estimator=base_clf,
+                            n_estimators=num_trees,
+                            random_state=2)
 
     cv = model_selection.StratifiedKFold(5)
-    oz = RFECV(base_clf, cv=cv, scoring='accuracy', title='Recursive selection of features')
+    oz = RFECV(base_clf,
+               cv=cv,
+               scoring='accuracy',
+               title='Recursive selection of features')
     oz.fit(x, y)
     for tick in oz.ax.xaxis.get_major_ticks():
         tick.label.set_fontsize(14)
@@ -131,6 +145,5 @@ def selected_features(config):
         tick.label.set_fontsize(14)
 
     oz.poof()
-
 
     return None

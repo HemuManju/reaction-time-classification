@@ -21,7 +21,7 @@ def estimate_density(config):
 
     read_path = Path(__file__).parents[2] / config['processed_dataframe']
     df = read_dataframe(read_path)
-    df = df[df['task_stage']!=1]
+    df = df[df['task_stage'] != 1]
     x = df['reaction_time'].values
     x = x[:, np.newaxis]
     x_plot = np.linspace(0, 2, 1000)[:, np.newaxis]
@@ -31,7 +31,9 @@ def estimate_density(config):
         print(kernel)
         kde = KernelDensity(kernel=kernel, bandwidth=0.5).fit(x)
         log_dens = kde.score_samples(x_plot)
-        ax.plot(x_plot[:, 0], np.exp(log_dens), '-',
+        ax.plot(x_plot[:, 0],
+                np.exp(log_dens),
+                '-',
                 label="kernel = '{0}'".format(kernel))
 
     plt.legend()

@@ -42,11 +42,11 @@ def create_classification_data(config, features, predicted_variable):
     y = np.empty((0, len(predicted_variable)))
 
     for subject in config['subjects']:
-        df_temp = df[df['subject']==subject]
+        df_temp = df[df['subject'] == subject]
         x_temp = df_temp[features].values
         y_temp = df_temp[predicted_variable].values
-        y_temp[y_temp<=3]=0
-        y_temp[y_temp>3]=1
+        y_temp[y_temp <= 3] = 0
+        y_temp[y_temp > 3] = 1
         # x_temp = stats.zscore(x_temp, axis=0)
         x = np.vstack((x, x_temp))
         y = np.vstack((y, y_temp))
@@ -75,14 +75,21 @@ def feature_selection(config):
 
     eye_features = ['fixation_rate', 'transition_ratio', 'glance_ratio']
     pupil_size = ['pupil_size']
-    brain_features = ['mental_workload','high_engagement', 'low_engagement', 'distraction']
+    brain_features = [
+        'mental_workload', 'high_engagement', 'low_engagement', 'distraction'
+    ]
     predicted_variable = ['task_stage']
     task_stage = ['']
-    features = [pupil_size, eye_features, eye_features+pupil_size, brain_features, brain_features+pupil_size, brain_features+eye_features, eye_features+brain_features+pupil_size]
+    features = [
+        pupil_size, eye_features, eye_features + pupil_size, brain_features,
+        brain_features + pupil_size, brain_features + eye_features,
+        eye_features + brain_features + pupil_size
+    ]
 
     x, y = {}, {}
     for i, feature in enumerate(features):
-        x[i], y[i] = create_classification_data(config, feature, predicted_variable)
+        x[i], y[i] = create_classification_data(config, feature,
+                                                predicted_variable)
 
     return x, y
 
@@ -106,10 +113,14 @@ def task_type_classification(config):
 
     clf = {}
     for key in X.keys():
-        x_train, x_test, y_train, y_test = train_test_split(X[key], Y[key], test_size=config['test_size'])
-        clf[key] = svm.SVC(gamma=config['gamma'], kernel=config['kernel'], decision_function_shape=config['decision_function_shape'])
+        x_train, x_test, y_train, y_test = train_test_split(
+            X[key], Y[key], test_size=config['test_size'])
+        clf[key] = svm.SVC(
+            gamma=config['gamma'],
+            kernel=config['kernel'],
+            decision_function_shape=config['decision_function_shape'])
         clf[key].fit(x_train, y_train.flatten())
-        y_pred =  clf[key].predict(x_test)
+        y_pred = clf[key].predict(x_test)
         print(accuracy_score(y_test, y_pred))
 
     return None
