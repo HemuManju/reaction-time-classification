@@ -79,28 +79,8 @@ def save_dataset(path, dataset, save):
     return None
 
 
-def save_dataframe(path, dataframe, save):
-    """save the dataset.
-
-    Parameters
-    ----------
-    path : str
-        path to save.
-    dataframe : dict
-        dictionary of pandas dataframe to save
-
-    save : Bool
-
-    """
-    if save:
-        with open(path, 'wb') as f:
-            pickle.dump(dataframe, f, pickle.HIGHEST_PROTOCOL)
-
-    return None
-
-
-def read_dataframe(path):
-    """Save the dataset.
+def read_dataset(path):
+    """Read the dataset.
 
     Parameters
     ----------
@@ -112,8 +92,7 @@ def read_dataframe(path):
 
     """
 
-    with open(path, 'rb') as f:
-        data = pickle.load(f)
+    data = dd.io.load(path)
 
     return data
 

@@ -6,8 +6,7 @@ n_electrodes:            9
 s_freq:                  256
 
 # Subject parameters
-subjects:                ['7704','7702','7703','7000','7705','7706',
-'6004','2006','7707','7708','7709','7710','7711','7712','7713','7714',
+subjects:                ['7704','7702','7703','7000','7705','7706','6004','2006','7707','7708','7709','7710','7711','7712','7713','7714',
 '7715','7716','7717','7718','7719']
 expert:                  ['7704','7702','7711','7714','7716','7718','7719']
 expert_id:               [0, 1, 14, 15, 17, 19, 20]
@@ -68,7 +67,7 @@ classification_features: ['mental_workload', 'high_engagement', 'distraction']
 # Path
 raw_data_path:           'data/raw/'
 processed_dataset:       'data/processed/processed_exp_0_dataset.h5'
-secondary_dataframe:     'data/processed/secondary_exp_0_dataframe.pkl'
-processed_dataframe:     'data/processed/processed_exp_0_dataframe.pkl'
+secondary_dataframe:     'data/processed/secondary_exp_0_dataframe.h5'
+processed_dataframe:     'data/processed/processed_exp_0_dataframe.h5'
 r_dataframe:             'data/r_data/exp_0_dataframe.RData'
 save_path :              'models/experiment_2/'

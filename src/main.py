@@ -13,16 +13,16 @@ from models.task_classification import task_type_classification
 from models.density_estimation import estimate_density
 from visualization.visualize import plot_classification_accuracy, plot_reaction_time
 
-config = yaml.load(open('config.yml'))
+config = yaml.load(open('config.yml'), Loader=yaml.SafeLoader)
 
-with skip_run('skip', 'create_dataset') as check, check():
+with skip_run('run', 'create_dataset') as check, check():
     data, dataframe, secondary_dataframe = create_dataframe(
         config['subjects'], config)
     save_path = Path(__file__).parents[1] / config['processed_dataframe']
-    save_dataframe(str(save_path), dataframe, save=True)
+    save_dataset(str(save_path), dataframe, save=True)
 
     save_path = Path(__file__).parents[1] / config['secondary_dataframe']
-    save_dataframe(str(save_path), secondary_dataframe, save=True)
+    save_dataset(str(save_path), secondary_dataframe, save=True)
 
     save_path = Path(__file__).parents[1] / config['processed_dataset']
     save_dataset(str(save_path), data, save=True)
@@ -61,5 +61,5 @@ with skip_run('skip', 'task_type_classification') as check, check():
 with skip_run('skip', 'plot_reaction_time') as check, check():
     plot_reaction_time(config['subjects'][1], config)
 
-with skip_run_code('skip', 'plot_detection_false_alarm') as check, check():
+with skip_run('skip', 'plot_detection_false_alarm') as check, check():
     plot_detection_false_alarm_rate(config)
