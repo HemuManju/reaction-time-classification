@@ -8,56 +8,30 @@ In the teleoperated scenario, as the task difficulty increases, the performance 
 
 Project Organization
 ------------
-<<<<<<< HEAD
 
-    ├── src
-    ├── config.yml
-    ├── data
-    │   ├── __init__.py
-    │   └── create_dataset.py
-    ├── features
-    │   ├── __init__.py
-    │   ├── features_selection.py
-    │   └── utils.py
-    ├── main.py
-    ├── models
-    │   ├── __init__.py
-    │   ├── density_estimation.py
-    │   ├── rt_classification.py
-    │   ├── statistical_analysis.Rmd
-    │   ├── t_sne_analysis.py
-    │   ├── task_classification.py
-    │   └── utils.py
-    ├── utils.py
-    └── visualization
-           ├── __init__.py
-           ├── utils.py
-           └── visualize.py
-=======
-          src
-          ├── config.yml
-          ├── data
-          │   ├── __init__.py
-          │   └── create_dataset.py
-          ├── features
-          │   ├── __init__.py
-          │   ├── features_selection.py
-          │   └── utils.py
-          ├── main.py
-          ├── models
-          │   ├── __init__.py
-          │   ├── density_estimation.py
-          │   ├── rt_classification.py
-          │   ├── statistical_analysis.Rmd
-          │   ├── t_sne_analysis.py
-          │   ├── task_classification.py
-          │   └── utils.py
-          ├── utils.py
-          └── visualization
-                 ├── __init__.py
-                 ├── utils.py
-                 └── visualize.py
->>>>>>> 85ba0a45bc34fa6f5f2349f3cba2114e92159f98
+      ├── src
+      ├── config.yml
+      ├── data
+      │   ├── __init__.py
+      │   └── create_dataset.py
+      ├── features
+      │   ├── __init__.py
+      │   ├── features_selection.py
+      │   └── utils.py
+      ├── main.py
+      ├── models
+      │   ├── __init__.py
+      │   ├── density_estimation.py
+      │   ├── rt_classification.py
+      │   ├── statistical_analysis.Rmd
+      │   ├── t_sne_analysis.py
+      │   ├── task_classification.py
+      │   └── utils.py
+      ├── utils.py
+      └── visualization
+             ├── __init__.py
+             ├── utils.py
+             └── visualize.py
 
 ------------
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
