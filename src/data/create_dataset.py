@@ -7,15 +7,18 @@ import pickle
 
 
 def read_dataframe(path):
-    """Save the dataset.
+    """
+    Read the DataFrame.
 
     Parameters
     ----------
     path : str
-        path to save.
-    dataframe : dict
-        dictionary of pandas dataframe to save
+        Path to DataFrame.
 
+    Returns
+    -------
+    DataFrame
+        Stored DataFrame in the path.
 
     """
 

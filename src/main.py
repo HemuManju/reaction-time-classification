@@ -15,7 +15,7 @@ from visualization.visualize import plot_classification_accuracy, plot_reaction_
 
 config = yaml.load(open('config.yml'), Loader=yaml.SafeLoader)
 
-with skip_run('run', 'create_dataset') as check, check():
+with skip_run('skip', 'create_dataset') as check, check():
     data, dataframe, secondary_dataframe = create_dataframe(
         config['subjects'], config)
     save_path = Path(__file__).parents[1] / config['processed_dataframe']
