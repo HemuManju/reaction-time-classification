@@ -1,17 +1,12 @@
-import yaml
-import numpy as np
-import pandas as pd
 import numpy as np
 from pathlib import Path
+
 from sklearn import svm
-from scipy.stats import invgauss, norm
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-from scipy import stats
+
 from imblearn.under_sampling import RandomUnderSampler
-from collections import Counter
+
 from .utils import read_dataframe
 
 
@@ -37,7 +32,7 @@ def create_classification_data(config, features, predicted_variable):
     read_path = Path(__file__).parents[2] / config['processed_dataframe']
     df = read_dataframe(read_path)
 
-    #Initialise
+    # Initialise
     x = np.empty((0, len(features)))
     y = np.empty((0, len(predicted_variable)))
 
@@ -79,7 +74,6 @@ def feature_selection(config):
         'mental_workload', 'high_engagement', 'low_engagement', 'distraction'
     ]
     predicted_variable = ['task_stage']
-    task_stage = ['']
     features = [
         pupil_size, eye_features, eye_features + pupil_size, brain_features,
         brain_features + pupil_size, brain_features + eye_features,

@@ -1,18 +1,24 @@
 import yaml
-import numpy as np
-import matplotlib.pyplot as plt
-from utils import *
-from scipy.optimize import curve_fit
-from scipy.stats import invgauss
+from pathlib import Path
+
 from data.create_dataset import create_dataframe
 from data.create_dataset import create_r_dataframe
-from models.t_sne_analysis import t_sne
+
 from features.features_selection import selected_features
+
+from models.t_sne_analysis import t_sne
 from models.rt_classification import reaction_time_classification
 from models.task_classification import task_type_classification
 from models.density_estimation import estimate_density
-from visualization.visualize import plot_classification_accuracy, plot_reaction_time
 
+from visualization.visualize import (plot_classification_accuracy,
+                                     plot_reaction_time,
+                                     plot_box_reaction_time,
+                                     plot_detection_false_alarm_rate)
+
+from .utils import (skip_run, save_dataset, save_model_log)
+
+# The configuration file
 config = yaml.load(open('config.yml'), Loader=yaml.SafeLoader)
 
 with skip_run('skip', 'create_dataset') as check, check():

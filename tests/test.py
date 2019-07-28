@@ -3,7 +3,6 @@ from pathlib import Path
 import deepdish
 import pytest
 import yaml
-import h5py
 import numpy as np
 
 # Configuration files
@@ -35,7 +34,8 @@ def test_eeg_dataset_length():
 
 # @pytest.mark.skip(reason='need to do')
 def test_eeg_robot_dataset_length():
-    """This verify whether correct number of epochs have been dropped from eeg and robot dataset.
+    """This verify whether correct number of epochs have been
+    dropped from eeg and robot dataset.
 
     Returns
     -------

@@ -6,7 +6,7 @@ import numpy as np
 from scipy.stats import ttest_ind
 from sklearn.preprocessing import MinMaxScaler
 from scipy import stats
-from .utils import *
+from .utils import (read_model_log, annotate_significance, read_dataframe)
 sb.set()
 
 
@@ -131,10 +131,8 @@ def plot_detection_false_alarm(config):
     read_path = Path(__file__).parents[2] / config['secondary_dataframe']
     df = read_dataframe(str(read_path))
 
-    temp_df = df[features]
     cols_to_norm = ['detection_percent_av', 'false_detection_av']
     df[cols_to_norm] = MinMaxScaler().fit_transform(df[cols_to_norm])
-    data = df
 
     # Plotting
     fig, ax = plt.subplots()

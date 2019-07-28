@@ -1,6 +1,4 @@
-import yaml
 import deepdish as dd
-from pathlib import Path
 from contextlib import contextmanager
 import pickle
 
@@ -18,7 +16,6 @@ class skip(object):
     f
 
     """
-
     def __init__(self, f):
         self.f = f
 
@@ -44,7 +41,6 @@ def skip_run(flag, f):
     None
 
     """
-
     @contextmanager
     def check_active():
         deactivated = ['skip']

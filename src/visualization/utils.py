@@ -1,6 +1,6 @@
-from pathlib import Path
 import pickle
 import matplotlib.pyplot as plt
+import matplotlib
 
 
 def read_dataframe(path):

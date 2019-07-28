@@ -1,16 +1,11 @@
-import yaml
 import numpy as np
-import pandas as pd
 from pathlib import Path
-from sklearn import svm
-import matplotlib.pyplot as plt
 from scipy.stats import invgauss
-from scipy.stats import zscore
-from sklearn.svm import SVC
 from sklearn.preprocessing import normalize
 from sklearn import model_selection
-from sklearn.ensemble import BaggingClassifier, RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.feature_selection import RFECV
+
 from imblearn.under_sampling import RandomUnderSampler
 from .utils import read_dataframe
 
@@ -64,7 +59,7 @@ def create_classification_data(config, features, predicted_variable):
 
     read_path = Path(__file__).parents[2] / config['processed_dataframe']
     df = read_dataframe(read_path)
-    #Initialise
+    # Initialise
     x = np.empty((0, len(features)))
     y = np.empty((0, len(predicted_variable)))
 
@@ -127,10 +122,11 @@ def selected_features(config):
 
     # Estimator
     base_clf = DecisionTreeClassifier(max_depth=2)
-    num_trees = 200
-    clf = BaggingClassifier(base_estimator=base_clf,
-                            n_estimators=num_trees,
-                            random_state=2)
+
+    # num_trees = 200
+    # clf = BaggingClassifier(base_estimator=base_clf,
+    #                         n_estimators=num_trees,
+    #                         random_state=2)
 
     cv = model_selection.StratifiedKFold(5)
     oz = RFECV(base_clf,

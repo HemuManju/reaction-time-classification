@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import scipy.io as sio
 from pathlib import Path
 import feather

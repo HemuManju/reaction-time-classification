@@ -1,16 +1,16 @@
-import yaml
 import collections
 import numpy as np
-import pandas as pd
 from pathlib import Path
-from sklearn import svm
-from scipy.stats import invgauss, norm, zscore
+
+from scipy.stats import invgauss
+
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
+
 from imblearn.under_sampling import RandomUnderSampler
-from collections import Counter
+
 from .utils import read_dataframe
 
 
@@ -70,7 +70,9 @@ def inverse_gaussian_percentile(data, percentiles):
 
 
 def create_classification_data(df, features, predicted_variable, config):
-    """Create a classification dataset with features and convert continous value of reaction time to classes by fitting an inverse gaussian distribution.
+    """Create a classification dataset with features and convert
+    continous value of reaction time to classes by fitting
+    an inverse gaussian distribution.
 
     Parameters
     ----------
@@ -87,7 +89,7 @@ def create_classification_data(df, features, predicted_variable, config):
         Array of x and y with reaction time converted to classes.
 
     """
-    #Initialise
+    # Initialise
     x = np.empty((0, len(features)))
     y = np.empty((0, len(predicted_variable)))
 
@@ -114,7 +116,8 @@ def create_classification_data(df, features, predicted_variable, config):
 
 
 def create_feature_set(config):
-    """Generate different combination of features with task type and without task type.
+    """Generate different combination of features
+    with task type and without task type.
 
     Parameters
     ----------
@@ -150,7 +153,8 @@ def create_feature_set(config):
 
 
 def reaction_time_classification(config):
-    """Perform reaction time classification with different features using Adaptive boosting of decision trees.
+    """Perform reaction time classification with different
+    features using Adaptive boosting of decision trees.
 
     Parameters
     ----------
@@ -172,8 +176,6 @@ def reaction_time_classification(config):
             x_train, x_test, y_train, y_test = train_test_split(
                 X[key], Y[key], test_size=config['test_size'])
             # Classifier
-            estimators = config['estimators']
-            depth = config['max_depth']
             clf = AdaBoostClassifier(DecisionTreeClassifier(max_depth=2),
                                      algorithm="SAMME",
                                      n_estimators=200)
