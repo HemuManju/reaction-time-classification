@@ -1,6 +1,7 @@
 import pickle
 import matplotlib.pyplot as plt
 import matplotlib
+import deepdish as dd
 
 
 def read_dataframe(path):
@@ -16,8 +17,7 @@ def read_dataframe(path):
 
     """
 
-    with open(path, 'rb') as f:
-        data = pickle.load(f)
+    data = dd.io.load(path)
 
     return data
 

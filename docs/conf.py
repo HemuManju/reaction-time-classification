@@ -166,7 +166,7 @@ html_last_updated_fmt = '%b %d, %Y'
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Reaction time classificationdoc'
+htmlhelp_basename = 'Reaction time classification doc'
 
 # -- Options for LaTeX output --------------------------------------------------
 
@@ -185,7 +185,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
     ('index', 'Reaction time classification.tex',
-     u'Reaction time classification Documentation', u"Hemanth ", 'manual'),
+     u'Reaction time classification Documentation', u"Hemanth Manjunatha", 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -213,7 +213,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [('index', 'Reaction time classification',
-              u'Reaction time classification Documentation', [u"Hemanth "], 1)]
+              u'Reaction time classification Documentation', [u"Hemanth Manjunatha"], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -225,7 +225,7 @@ man_pages = [('index', 'Reaction time classification',
 #  dir menu entry, description, category)
 texinfo_documents = [
     ('index', 'Reaction time classification',
-     u'Reaction time classification Documentation', u"Hemanth ",
+     u'Reaction time classification Documentation', u"Hemanth Manjunatha",
      'Reaction time classification',
      'Classification of reaction time of an operator performing tele-operation',
      'Miscellaneous'),

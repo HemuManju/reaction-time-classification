@@ -4,7 +4,8 @@ setup(
     name='src',
     packages=find_packages(),
     version='0.1.0',
-    description='Classification of reaction time of an operator performing tele-operation',
+    description='Classification of reaction time of an \
+    operator performing tele-operation',
     author='Hemanth ',
     license='MIT',
 )

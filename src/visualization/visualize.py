@@ -172,6 +172,7 @@ def plot_reaction_time(subject, config):
     df = read_dataframe(str(read_path))
     subject_df = df[df['subject'] == subject]
 
+    sb.set(font_scale=1.2)
     f, (ax_box,
         ax_hist) = plt.subplots(2,
                                 sharex=True,
@@ -180,6 +181,7 @@ def plot_reaction_time(subject, config):
     # Add a graph in each part
     sb.boxplot(subject_df['reaction_time'].values - 0.015, ax=ax_box)
     sb.distplot(subject_df['reaction_time'],
+                bins=10,
                 ax=ax_hist,
                 kde=False,
                 norm_hist=True)

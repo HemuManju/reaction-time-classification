@@ -14,9 +14,9 @@ from models.density_estimation import estimate_density
 from visualization.visualize import (plot_classification_accuracy,
                                      plot_reaction_time,
                                      plot_box_reaction_time,
-                                     plot_detection_false_alarm_rate)
+                                     plot_detection_false_alarm)
 
-from .utils import (skip_run, save_dataset, save_model_log)
+from utils import (skip_run, save_dataset, save_model_log)
 
 # The configuration file
 config = yaml.load(open('config.yml'), Loader=yaml.SafeLoader)
@@ -68,4 +68,4 @@ with skip_run('skip', 'plot_reaction_time') as check, check():
     plot_reaction_time(config['subjects'][1], config)
 
 with skip_run('skip', 'plot_detection_false_alarm') as check, check():
-    plot_detection_false_alarm_rate(config)
+    plot_detection_false_alarm(config)
