@@ -1,0 +1,449 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>models package &mdash; Reaction time classification 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="visualization package" href="visualization.html" />
+    <link rel="prev" title="features package" href="features.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Reaction time classification
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">data package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">features package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">models package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-models.density_estimation">models.density_estimation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-models.rt_classification">models.rt_classification module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-models.t_sne_analysis">models.t_sne_analysis module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-models.task_classification">models.task_classification module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-models.utils">models.utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">visualization package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html">main module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Reaction time classification</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>models package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/source/models.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-models">
+<span id="models-package"></span><h1>models package<a class="headerlink" href="#module-models" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-models.density_estimation">
+<span id="models-density-estimation-module"></span><h2>models.density_estimation module<a class="headerlink" href="#module-models.density_estimation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="models.density_estimation.estimate_density">
+<code class="sig-name descname">estimate_density</code><span class="sig-paren">(</span><em class="sig-param">config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/models/density_estimation.html#estimate_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.density_estimation.estimate_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kernel density estimation of reaction time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>yaml</em>) – The configuration file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-models.rt_classification">
+<span id="models-rt-classification-module"></span><h2>models.rt_classification module<a class="headerlink" href="#module-models.rt_classification" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="models.rt_classification.create_classification_data">
+<code class="sig-name descname">create_classification_data</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">features</em>, <em class="sig-param">predicted_variable</em>, <em class="sig-param">config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/models/rt_classification.html#create_classification_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.rt_classification.create_classification_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a classification dataset with features and convert
+continous value of reaction time to classes by fitting
+an inverse gaussian distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>dataframe</em>) – Pandas dataframe.</p></li>
+<li><p><strong>features</strong> (<em>list</em>) – A list of features from configuration file.</p></li>
+<li><p><strong>predicted_variable</strong> (<em>list</em>) – A list of predicted variable (response time).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Array of x and y with reaction time converted to classes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="models.rt_classification.create_feature_set">
+<code class="sig-name descname">create_feature_set</code><span class="sig-paren">(</span><em class="sig-param">config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/models/rt_classification.html#create_feature_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.rt_classification.create_feature_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate different combination of features
+with task type and without task type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>yaml</em>) – The configuration file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary with different training data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="models.rt_classification.inverse_gaussian_percentile">
+<code class="sig-name descname">inverse_gaussian_percentile</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">percentiles</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/models/rt_classification.html#inverse_gaussian_percentile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.rt_classification.inverse_gaussian_percentile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit recinormal distribution and get the values at given percentile values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array</em>) – Numpy array.</p></li>
+<li><p><strong>percentile</strong> (<em>list</em>) – Percentile list.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>reaction time at given percentile.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="models.rt_classification.reaction_time_classification">
+<code class="sig-name descname">reaction_time_classification</code><span class="sig-paren">(</span><em class="sig-param">config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/models/rt_classification.html#reaction_time_classification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.rt_classification.reaction_time_classification" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform reaction time classification with different
+features using Adaptive boosting of decision trees.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>yaml</em>) – The configuration file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Accuracy of classification.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="models.rt_classification.recinormal">
+<code class="sig-name descname">recinormal</code><span class="sig-paren">(</span><em class="sig-param">rt</em>, <em class="sig-param">mu</em>, <em class="sig-param">sigma</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/models/rt_classification.html#recinormal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.rt_classification.recinormal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recinormal distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rt</strong> (<em>array</em>) – Reaction time vector.</p></li>
+<li><p><strong>mu</strong> (<em>numeric</em>) – mean of the distribution.</p></li>
+<li><p><strong>sigma</strong> (<em>numeric</em>) – Variance of the distribution.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>recinormal pdf of given rt.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-models.t_sne_analysis">
+<span id="models-t-sne-analysis-module"></span><h2>models.t_sne_analysis module<a class="headerlink" href="#module-models.t_sne_analysis" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="models.t_sne_analysis.t_sne">
+<code class="sig-name descname">t_sne</code><span class="sig-paren">(</span><em class="sig-param">config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/models/t_sne_analysis.html#t_sne"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.t_sne_analysis.t_sne" title="Permalink to this definition">¶</a></dt>
+<dd><p>t-sne analysis of tele-operation data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>yaml</em>) – The configuration file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-models.task_classification">
+<span id="models-task-classification-module"></span><h2>models.task_classification module<a class="headerlink" href="#module-models.task_classification" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="models.task_classification.create_classification_data">
+<code class="sig-name descname">create_classification_data</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">features</em>, <em class="sig-param">predicted_variable</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/models/task_classification.html#create_classification_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.task_classification.create_classification_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a classification dataset with features.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<em>yaml</em>) – The configuration file.</p></li>
+<li><p><strong>features</strong> (<em>list</em>) – A list of features from configuration file.</p></li>
+<li><p><strong>predicted_variable</strong> (<em>list</em>) – A list of predicted variable (response time).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Array of x and y with reaction time converted to classes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="models.task_classification.feature_selection">
+<code class="sig-name descname">feature_selection</code><span class="sig-paren">(</span><em class="sig-param">config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/models/task_classification.html#feature_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.task_classification.feature_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate different combination of features from eye, pupil, and brain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>yaml</em>) – The configuration file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary with different training data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="models.task_classification.task_type_classification">
+<code class="sig-name descname">task_type_classification</code><span class="sig-paren">(</span><em class="sig-param">config</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/models/task_classification.html#task_type_classification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.task_classification.task_type_classification" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform reaction time classification with different features.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<em>yaml</em>) – The configuration file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Accuracy of classification.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-models.utils">
+<span id="models-utils-module"></span><h2>models.utils module<a class="headerlink" href="#module-models.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="models.utils.model_logging">
+<code class="sig-name descname">model_logging</code><span class="sig-paren">(</span><em class="sig-param">config</em>, <em class="sig-param">info</em>, <em class="sig-param">model</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/models/utils.html#model_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.utils.model_logging" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="models.utils.read_dataframe">
+<code class="sig-name descname">read_dataframe</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/models/utils.html#read_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#models.utils.read_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – path to save.</p></li>
+<li><p><strong>dataframe</strong> (<em>dict</em>) – dictionary of pandas dataframe to save</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="visualization.html" class="btn btn-neutral float-right" title="visualization package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="features.html" class="btn btn-neutral float-left" title="features package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 
+      <span class="lastupdated">
+        Last updated on Aug 12, 2019.
+      </span>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

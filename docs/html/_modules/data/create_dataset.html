@@ -1,0 +1,356 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>data.create_dataset &mdash; Reaction time classification 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Reaction time classification
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/data.html">data package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/features.html">features package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/models.html">models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/visualization.html">visualization package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/main.html">main module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Reaction time classification</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>data.create_dataset</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for data.create_dataset</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">scipy.io</span> <span class="k">as</span> <span class="nn">sio</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">feather</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+
+
+<div class="viewcode-block" id="read_dataframe"><a class="viewcode-back" href="../../source/data.html#data.create_dataset.read_dataframe">[docs]</a><span class="k">def</span> <span class="nf">read_dataframe</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read the DataFrame.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path : str</span>
+<span class="sd">        Path to DataFrame.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    DataFrame</span>
+<span class="sd">        Stored DataFrame in the path.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="read_matlab_file"><a class="viewcode-back" href="../../source/data.html#data.create_dataset.read_matlab_file">[docs]</a><span class="k">def</span> <span class="nf">read_matlab_file</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Reads the matlab file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    config : yaml</span>
+<span class="sd">        Configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array</span>
+<span class="sd">        Numpy N-D array.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span>
+        <span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;raw_data_path&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="s1">&#39;matlab_data.mat&#39;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))[</span><span class="s1">&#39;local_data&#39;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="create_secondary_dataframe"><a class="viewcode-back" href="../../source/data.html#data.create_dataset.create_secondary_dataframe">[docs]</a><span class="k">def</span> <span class="nf">create_secondary_dataframe</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create secondary dataset.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    config : yaml</span>
+<span class="sd">        The configuration data file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas dataframe</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span>
+        <span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;raw_data_path&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="s1">&#39;secondary_data.xls&#39;</span>
+    <span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+    <span class="c1"># Add the performance level</span>
+    <span class="n">experts_id</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;expert_id&#39;</span><span class="p">]</span>
+    <span class="n">performance</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;low_performer&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;subjects&#39;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">performance</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">experts_id</span><span class="p">:</span>
+            <span class="n">performance</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;high_performer&#39;</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;performance_level&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">performance</span>
+
+    <span class="k">return</span> <span class="n">dataframe</span></div>
+
+
+<div class="viewcode-block" id="create_dataframe"><a class="viewcode-back" href="../../source/data.html#data.create_dataset.create_dataframe">[docs]</a><span class="k">def</span> <span class="nf">create_dataframe</span><span class="p">(</span><span class="n">subjects</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create dictionary dataset of subjects.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    subjects : type</span>
+<span class="sd">        Description of parameter `subjects`.</span>
+<span class="sd">    config : type</span>
+<span class="sd">        Description of parameter `config`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    type</span>
+<span class="sd">        Description of returned object.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">matlab_data</span> <span class="o">=</span> <span class="n">read_matlab_file</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">subject</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">subjects</span><span class="p">):</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">subject</span><span class="p">]</span> <span class="o">=</span> <span class="n">matlab_data</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">]</span>
+        <span class="n">df_temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">matlab_data</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i</span><span class="p">],</span>
+                               <span class="n">columns</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">])</span>
+        <span class="n">df_temp</span><span class="p">[</span><span class="s1">&#39;subject&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subject</span>
+        <span class="c1"># Append task type</span>
+        <span class="n">df_temp</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_temp</span><span class="o">.</span><span class="n">task_stage</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;task_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">df_temp</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_temp</span><span class="o">.</span><span class="n">task_stage</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;task_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># Append task difficulty</span>
+        <span class="c1"># Visual</span>
+        <span class="n">df_temp</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_temp</span><span class="o">.</span><span class="n">task_stage</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span>
+                    <span class="p">(</span><span class="n">df_temp</span><span class="o">.</span><span class="n">task_type</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;task_difficulty&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">df_temp</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_temp</span><span class="o">.</span><span class="n">task_stage</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&amp;</span>
+                    <span class="p">(</span><span class="n">df_temp</span><span class="o">.</span><span class="n">task_type</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;task_difficulty&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="c1"># Motor</span>
+        <span class="n">df_temp</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_temp</span><span class="o">.</span><span class="n">task_stage</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span> <span class="o">&amp;</span>
+                    <span class="p">(</span><span class="n">df_temp</span><span class="o">.</span><span class="n">task_type</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;task_difficulty&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">df_temp</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">df_temp</span><span class="o">.</span><span class="n">task_stage</span> <span class="o">==</span> <span class="mi">5</span><span class="p">)</span> <span class="o">&amp;</span>
+                    <span class="p">(</span><span class="n">df_temp</span><span class="o">.</span><span class="n">task_type</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;task_difficulty&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="k">if</span> <span class="n">subject</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;expert&#39;</span><span class="p">]:</span>
+            <span class="n">df_temp</span><span class="p">[</span><span class="s1">&#39;performance_level&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;high_performer&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">df_temp</span><span class="p">[</span><span class="s1">&#39;performance_level&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;low_performer&#39;</span>
+        <span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_temp</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">secondary_dataframe</span> <span class="o">=</span> <span class="n">create_secondary_dataframe</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="c1"># Remove nan and zeros</span>
+    <span class="n">dataframe</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="p">(</span><span class="n">dataframe</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
+    <span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;reaction_time&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;task_stage&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">,</span> <span class="n">secondary_dataframe</span></div>
+
+
+<div class="viewcode-block" id="create_r_dataframe"><a class="viewcode-back" href="../../source/data.html#data.create_dataset.create_r_dataframe">[docs]</a><span class="k">def</span> <span class="nf">create_r_dataframe</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a r dataframe.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    config : yaml</span>
+<span class="sd">        The configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">read_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;processed_dataframe&#39;</span><span class="p">]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">read_dataframe</span><span class="p">(</span><span class="n">read_path</span><span class="p">)</span>
+
+    <span class="n">save_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;r_dataframe&#39;</span><span class="p">]</span>
+    <span class="n">feather</span><span class="o">.</span><span class="n">write_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">save_path</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 
+      <span class="lastupdated">
+        Last updated on Aug 12, 2019.
+      </span>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,345 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>features.features_selection &mdash; Reaction time classification 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Reaction time classification
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/data.html">data package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/features.html">features package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/models.html">models package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/visualization.html">visualization package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../source/main.html">main module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Reaction time classification</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>features.features_selection</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for features.features_selection</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">invgauss</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">normalize</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="k">import</span> <span class="n">model_selection</span>
+<span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="k">import</span> <span class="n">DecisionTreeClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.feature_selection</span> <span class="k">import</span> <span class="n">RFECV</span>
+
+<span class="kn">from</span> <span class="nn">imblearn.under_sampling</span> <span class="k">import</span> <span class="n">RandomUnderSampler</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">read_dataframe</span>
+
+
+<div class="viewcode-block" id="inverse_gaussian_percentile"><a class="viewcode-back" href="../../source/features.html#features.features_selection.inverse_gaussian_percentile">[docs]</a><span class="k">def</span> <span class="nf">inverse_gaussian_percentile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">percentiles</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Fit recinormal distribution and get the values at given percentile values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : array</span>
+<span class="sd">        Numpy array.</span>
+<span class="sd">    percentile : list</span>
+<span class="sd">        Percentile list.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array</span>
+<span class="sd">        reaction time at given percentile.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">invgauss</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">percentile</span> <span class="ow">in</span> <span class="n">percentiles</span><span class="p">:</span>
+        <span class="n">value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">invgauss</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">percentile</span><span class="p">,</span>
+                         <span class="n">mu</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                         <span class="n">loc</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                         <span class="n">scale</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_classification_data"><a class="viewcode-back" href="../../source/features.html#features.features_selection.create_classification_data">[docs]</a><span class="k">def</span> <span class="nf">create_classification_data</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">predicted_variable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a classification dataset with features.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    config : yaml</span>
+<span class="sd">        The configuration file.</span>
+<span class="sd">    features : list</span>
+<span class="sd">        A list of features from configuration file.</span>
+<span class="sd">    predicted_variable : list</span>
+<span class="sd">        A list of predicted variable (response time).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    array</span>
+<span class="sd">        Array of x and y with reaction time converted to classes.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">read_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;processed_dataframe&#39;</span><span class="p">]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">read_dataframe</span><span class="p">(</span><span class="n">read_path</span><span class="p">)</span>
+    <span class="c1"># Initialise</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">)))</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">predicted_variable</span><span class="p">)))</span>
+
+    <span class="k">for</span> <span class="n">subject</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;subjects&#39;</span><span class="p">]:</span>
+        <span class="n">df_temp</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;subject&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">subject</span><span class="p">]</span>
+        <span class="n">x_temp</span> <span class="o">=</span> <span class="n">df_temp</span><span class="p">[</span><span class="n">features</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">y_temp</span> <span class="o">=</span> <span class="n">df_temp</span><span class="p">[</span><span class="n">predicted_variable</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">y_dummy</span> <span class="o">=</span> <span class="n">y_temp</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">percentile</span> <span class="o">=</span> <span class="n">inverse_gaussian_percentile</span><span class="p">(</span><span class="n">y_temp</span><span class="p">,</span>
+                                                 <span class="p">[</span><span class="mf">0.0001</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.9999</span><span class="p">])</span>
+        <span class="c1"># Get percentile and divide into class</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">percentile</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_temp</span> <span class="o">&gt;=</span> <span class="n">percentile</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">y_temp</span> <span class="o">&lt;=</span> <span class="n">percentile</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">y_dummy</span><span class="p">[</span><span class="n">temp</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="c1"># z-score of the features</span>
+        <span class="c1"># x_dummy = zscore(x_temp[:,0:-1], axis=0)</span>
+        <span class="n">x_dummy</span> <span class="o">=</span> <span class="n">x_temp</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># Add back the task type</span>
+        <span class="n">x_dummy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">x_dummy</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">x_dummy</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">x_dummy</span><span class="p">))</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="n">y_dummy</span><span class="p">))</span>
+    <span class="c1"># Balance the dataset</span>
+    <span class="n">rus</span> <span class="o">=</span> <span class="n">RandomUnderSampler</span><span class="p">()</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">rus</span><span class="o">.</span><span class="n">fit_resample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div>
+
+
+<div class="viewcode-block" id="selected_features"><a class="viewcode-back" href="../../source/features.html#features.features_selection.selected_features">[docs]</a><span class="k">def</span> <span class="nf">selected_features</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Selected features for the classification of reaction time.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    config : yaml</span>
+<span class="sd">        The configuration file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        A list of selected features.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">eye_features</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;fixation_rate&#39;</span><span class="p">,</span> <span class="s1">&#39;transition_ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;glance_ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;pupil_size&#39;</span>
+    <span class="p">]</span>
+    <span class="n">brain_features</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;mental_workload&#39;</span><span class="p">,</span> <span class="s1">&#39;high_engagement&#39;</span><span class="p">,</span> <span class="s1">&#39;low_engagement&#39;</span><span class="p">,</span> <span class="s1">&#39;distraction&#39;</span>
+    <span class="p">]</span>
+    <span class="n">predicted_variable</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;reaction_time&#39;</span><span class="p">]</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">eye_features</span> <span class="o">+</span> <span class="n">brain_features</span>
+
+    <span class="k">if</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;include_task_type&#39;</span><span class="p">]:</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">features</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;task_type&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Dataset creation with all features</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">create_classification_data</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">predicted_variable</span><span class="p">)</span>
+
+    <span class="c1"># Estimator</span>
+    <span class="n">base_clf</span> <span class="o">=</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># num_trees = 200</span>
+    <span class="c1"># clf = BaggingClassifier(base_estimator=base_clf,</span>
+    <span class="c1">#                         n_estimators=num_trees,</span>
+    <span class="c1">#                         random_state=2)</span>
+
+    <span class="n">cv</span> <span class="o">=</span> <span class="n">model_selection</span><span class="o">.</span><span class="n">StratifiedKFold</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">oz</span> <span class="o">=</span> <span class="n">RFECV</span><span class="p">(</span><span class="n">base_clf</span><span class="p">,</span>
+               <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span>
+               <span class="n">scoring</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span>
+               <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Recursive selection of features&#39;</span><span class="p">)</span>
+    <span class="n">oz</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">tick</span> <span class="ow">in</span> <span class="n">oz</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">get_major_ticks</span><span class="p">():</span>
+        <span class="n">tick</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">set_fontsize</span><span class="p">(</span><span class="mi">14</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">tick</span> <span class="ow">in</span> <span class="n">oz</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">get_major_ticks</span><span class="p">():</span>
+        <span class="n">tick</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">set_fontsize</span><span class="p">(</span><span class="mi">14</span><span class="p">)</span>
+
+    <span class="n">oz</span><span class="o">.</span><span class="n">poof</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 
+      <span class="lastupdated">
+        Last updated on Aug 12, 2019.
+      </span>
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
