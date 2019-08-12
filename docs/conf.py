@@ -28,7 +28,8 @@ sys.path.insert(0, os.path.abspath('../src/'))
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     'sphinx.ext.napoleon', 'sphinx.ext.autodoc', 'sphinx.ext.autosummary',
-    'sphinx.ext.viewcode', 'sphinx.ext.inheritance_diagram'
+    'sphinx.ext.viewcode', 'sphinx.ext.inheritance_diagram',
+    'sphinx.ext.githubpages'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -185,7 +186,8 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
     ('index', 'Reaction time classification.tex',
-     u'Reaction time classification Documentation', u"Hemanth Manjunatha", 'manual'),
+     u'Reaction time classification Documentation', u"Hemanth Manjunatha",
+     'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -212,8 +214,10 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [('index', 'Reaction time classification',
-              u'Reaction time classification Documentation', [u"Hemanth Manjunatha"], 1)]
+man_pages = [
+    ('index', 'Reaction time classification',
+     u'Reaction time classification Documentation', [u"Hemanth Manjunatha"], 1)
+]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
