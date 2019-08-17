@@ -39,7 +39,9 @@ help:
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
 
 clean:
-	-rm -rf $(BUILDDIR)/*
+	-rm -rf $(BUILDDIR)/html/_static/fonts/RobotoSLab
+	-rm -rf $(BUILDDIR)/html/_static/fonts/Lato
+	-rm -rf $(BUILDDIR)/html/_static/fonts/*.ttf
 
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html

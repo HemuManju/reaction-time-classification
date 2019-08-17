@@ -16,9 +16,6 @@ Contents:
    source/features
    source/models
    source/visualization
-   source/main
-
-
 
 Indices and tables
 ==================
