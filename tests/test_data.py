@@ -10,7 +10,6 @@ path = Path(__file__).parents[1] / 'src/config.yml'
 config = yaml.load(open(path))
 epoch_length = config['epoch_length']
 subjects = config['subjects']
-trials = config['trials']
 
 
 # @pytest.mark.skip(reason='slow')

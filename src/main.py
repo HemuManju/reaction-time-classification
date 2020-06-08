@@ -19,7 +19,8 @@ from visualization.visualize import (plot_classification_accuracy,
 from utils import (skip_run, save_dataset, save_model_log)
 
 # The configuration file
-config = yaml.load(open('config.yml'), Loader=yaml.SafeLoader)
+config_path = Path(__file__).parents[1] / 'src/config.yml'
+config = yaml.load(open(str(config_path)), Loader=yaml.SafeLoader)
 
 with skip_run('skip', 'create_dataset') as check, check():
     data, dataframe, secondary_dataframe = create_dataframe(
@@ -65,7 +66,7 @@ with skip_run('skip', 'task_type_classification') as check, check():
     task_type_classification(config)
 
 with skip_run('skip', 'plot_reaction_time') as check, check():
-    plot_reaction_time(config['subjects'][1], config)
+    plot_reaction_time(config['subjects'][4], config)
 
 with skip_run('skip', 'plot_detection_false_alarm') as check, check():
     plot_detection_false_alarm(config)

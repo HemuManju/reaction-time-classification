@@ -1,21 +1,74 @@
 ##---------------------------------------------------------------------##
 ## Global parameters
 # EEG data parameters
-epoch_length:            2
-n_electrodes:            9
-s_freq:                  256
+epoch_length: 2
+n_electrodes: 9
+s_freq: 256
 
 # Subject parameters
-subjects:                ['7704','7702','7703','7000','7705','7706','6004',
-'2006','7707','7708','7709','7710','7711','7712','7713','7714',
-'7715','7716','7717','7718','7719']
-expert:                  ['7704','7702','7711','7714','7716','7718','7719']
-expert_id:               [0, 1, 14, 15, 17, 19, 20]
-novice:                  ['7703','7000','7705','7706','6004','2006',
-'7707','7708','7709','7710','7712','7713','7715','7717']
-test_subjects:           []
-features:                ['detected', 'drone_number' , 'target_shape', 'time', 'task_stage','reaction_time','fixation_rate','situation_awareness',
-'transition_ratio', 'glance_ratio', 'pupil_size','mental_workload', 'avg_mental_workload', 'high_engagement', 'low_engagement', 'distraction']
+subjects:
+  [
+    '7704',
+    '7702',
+    '7703',
+    '7000',
+    '7705',
+    '7706',
+    '6004',
+    '2006',
+    '7707',
+    '7708',
+    '7709',
+    '7710',
+    '7711',
+    '7712',
+    '7713',
+    '7714',
+    '7715',
+    '7716',
+    '7717',
+    '7718',
+    '7719',
+  ]
+expert: ['7704', '7702', '7711', '7714', '7716', '7718', '7719']
+expert_id: [0, 1, 14, 15, 17, 19, 20]
+novice:
+  [
+    '7703',
+    '7000',
+    '7705',
+    '7706',
+    '6004',
+    '2006',
+    '7707',
+    '7708',
+    '7709',
+    '7710',
+    '7712',
+    '7713',
+    '7715',
+    '7717',
+  ]
+test_subjects: []
+features:
+  [
+    'detected',
+    'drone_number',
+    'target_shape',
+    'time',
+    'task_stage',
+    'reaction_time',
+    'fixation_rate',
+    'situation_awareness',
+    'transition_ratio',
+    'glance_ratio',
+    'pupil_size',
+    'mental_workload',
+    'avg_mental_workload',
+    'high_engagement',
+    'low_engagement',
+    'distraction',
+  ]
 
 ##---------------------------------------------------------------------##
 # ## Experiment 0
@@ -33,7 +86,7 @@ features:                ['detected', 'drone_number' , 'target_shape', 'time', '
 # secondary_dataframe:   'data/processed/secondary_exp_0_dataframe.pkl'
 # processed_dataframe:   'data/processed/processed_exp_0_dataframe.pkl'
 # r_dataframe:           'data/r_data/exp_0_dataframe.RData'
-# save_path :            'models/experiment_0/'
+# save_path:            'models/experiment_0/'
 
 ##---------------------------------------------------------------------##
 # ## Experiment_1
@@ -58,17 +111,17 @@ features:                ['detected', 'drone_number' , 'target_shape', 'time', '
 ## Experiment_2
 # Using only cognitive features
 # Classification parameters for SVM
-estimators:              200
-max_depth:               2
-test_size:               0.25
-include_task_type:       True
-performance_level:       ['all_subjects', 'low_performer', 'high_performer']
+estimators: 200
+max_depth: 2
+test_size: 0.25
+include_task_type: True
+performance_level: ['all_subjects', 'low_performer', 'high_performer']
 classification_features: ['mental_workload', 'high_engagement', 'distraction']
 
 # Path
-raw_data_path:           'data/raw/'
-processed_dataset:       'data/processed/processed_exp_0_dataset.h5'
-secondary_dataframe:     'data/processed/secondary_exp_0_dataframe.h5'
-processed_dataframe:     'data/processed/processed_exp_0_dataframe.h5'
-r_dataframe:             'data/r_data/exp_0_dataframe.RData'
-save_path :              'models/experiment_2/'
+raw_data_path: 'data/raw/'
+processed_dataset: 'data/processed/processed_exp_0_dataset.h5'
+secondary_dataframe: 'data/processed/secondary_exp_0_dataframe.h5'
+processed_dataframe: 'data/processed/processed_exp_0_dataframe.h5'
+r_dataframe: 'data/r_data/exp_0_dataframe.RData'
+save_path: 'models/experiment_2/'

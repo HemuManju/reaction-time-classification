@@ -7,7 +7,7 @@ from scipy.stats import ttest_ind
 from sklearn.preprocessing import MinMaxScaler
 from scipy import stats
 from .utils import (read_model_log, annotate_significance, read_dataframe)
-sb.set()
+# sb.set()
 
 
 def plot_classification_accuracy(config):
@@ -172,7 +172,7 @@ def plot_reaction_time(subject, config):
     df = read_dataframe(str(read_path))
     subject_df = df[df['subject'] == subject]
 
-    sb.set(font_scale=1.2)
+    # sb.set(font_scale=1.2)
     f, (ax_box,
         ax_hist) = plt.subplots(2,
                                 sharex=True,
@@ -196,6 +196,7 @@ def plot_reaction_time(subject, config):
                                       loc=result[1],
                                       scale=result[2])
     plt.plot(lnspc, pdf_invgauss, color='#465F95')
+    plt.grid(True)
 
     # Append the 25, 75 percentile
     x_25 = stats.invgauss.ppf(0.25,
@@ -207,7 +208,7 @@ def plot_reaction_time(subject, config):
                               loc=result[1],
                               scale=result[2])
     plt.axvline(x=x_25, color='#3C3D40')
-    plt.axvline(x=x_75, color='#3C3D40')
+    # plt.axvline(x=x_75, color='#3C3D40')
 
     # Remove x axis name for the boxplot
     ax_box.set(xlabel='')
