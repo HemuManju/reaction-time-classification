@@ -1,0 +1,75 @@
+---
+title: "eeg_eye_statistical_analysis_with_categorical_data"
+---
+```{r Initialization}
+
+# Clear all
+rm(list=ls())
+
+library(yaml)
+library(ggplot2)
+library(feather)
+library(lme4)
+library(simr)
+library(here)
+library(sjPlot)
+library(writexl)
+library(ggpubr)
+library(sjmisc)
+
+# Read the configuration file
+config <- yaml.load_file("../../config.yml")
+
+# Train data
+r_dataset_train <- here(config$r_dataframe_train)
+df_train <- read.csv(r_dataset_train)
+df_train <- na.omit(df_train)
+
+# Test data
+r_dataset_test <- here(config$r_dataframe_test)
+df_test <- read.csv(r_dataset_test)
+df_test <- na.omit(df_test)
+```
+
+
+```{r Analysis of continous reaction time and features}
+# Select only static red team
+df_react <- df_train
+
+# Convert the character to numeric 
+df_react['response'] <- df_react$reaction_time
+
+# Fit the mixed effect model
+model <- glmer(response ~  fixation_rate + transition_ratio + pupil_size + glance_ratio + mental_workload + high_engagement + distraction + task_type + (1 |performance_level),data = df_react, 
+               family = gaussian(link = inverse))
+summary(model)
+tab_model(model)
+```
+
+
+```{r Analysis of continous reaction time and selected features}
+# Select only static red team
+df_react_train <- df_train
+df_react_test <- df_test
+
+# Convert the character to numeric 
+df_react_train['response'] <- df_react_train$reaction_time
+df_react_test['response'] <- df_react_test$reaction_time
+
+
+# Fit the mixed effect model
+model <- glmer(response ~ glance_ratio + mental_workload + task_type + (1 |performance_level),
+               data=df_react_train,family = gaussian(link = inverse))
+summary(model)
+tab_model(model)
+
+# Prediction
+preds <- predict(model,df_react_test,re.form= ~glance_ratio + mental_workload + task_type + (1 |performance_level))
+actual <- 1/df_react_test$response
+
+# Calculate R^2 value
+rss <- sum((preds - actual) ^ 2)  ## residual sum of squares
+tss <- sum((actual - mean(actual)) ^ 2)  ## total sum of squares
+rsq <- 1 - rss/tss
+rsq
+```

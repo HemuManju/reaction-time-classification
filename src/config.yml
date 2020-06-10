@@ -8,10 +8,10 @@ s_freq: 256
 # Subject parameters
 subjects:
   [
-    '7704',
+    '7000',
     '7702',
     '7703',
-    '7000',
+    '7704',
     '7705',
     '7706',
     '6004',
@@ -123,5 +123,6 @@ raw_data_path: 'data/raw/'
 processed_dataset: 'data/processed/processed_exp_0_dataset.h5'
 secondary_dataframe: 'data/processed/secondary_exp_0_dataframe.h5'
 processed_dataframe: 'data/processed/processed_exp_0_dataframe.h5'
-r_dataframe: 'data/r_data/exp_0_dataframe.RData'
+r_dataframe_train: 'data/r_data/exp_0_train_dataframe.csv'
+r_dataframe_test: 'data/r_data/exp_0_test_dataframe.csv'
 save_path: 'models/experiment_2/'

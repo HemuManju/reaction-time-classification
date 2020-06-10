@@ -2,7 +2,9 @@ import pandas as pd
 import scipy.io as sio
 from pathlib import Path
 import feather
-import pickle
+import deepdish as dd
+
+from sklearn.model_selection import train_test_split
 
 
 def read_dataframe(path):
@@ -21,8 +23,7 @@ def read_dataframe(path):
 
     """
 
-    with open(path, 'rb') as f:
-        data = pickle.load(f)
+    data = dd.io.load(path)
 
     return data
 
@@ -108,15 +109,15 @@ def create_dataframe(subjects, config):
 
         # Append task difficulty
         # Visual
-        df_temp.loc[(df_temp.task_stage <= 2) &
-                    (df_temp.task_type == 0), 'task_difficulty'] = 1
-        df_temp.loc[(df_temp.task_stage == 3) &
-                    (df_temp.task_type == 0), 'task_difficulty'] = 2
+        df_temp.loc[(df_temp.task_stage <= 2) & (df_temp.task_type == 0),
+                    'task_difficulty'] = 1
+        df_temp.loc[(df_temp.task_stage == 3) & (df_temp.task_type == 0),
+                    'task_difficulty'] = 2
         # Motor
-        df_temp.loc[(df_temp.task_stage == 4) &
-                    (df_temp.task_type == 1), 'task_difficulty'] = 1
-        df_temp.loc[(df_temp.task_stage == 5) &
-                    (df_temp.task_type == 1), 'task_difficulty'] = 2
+        df_temp.loc[(df_temp.task_stage == 4) & (df_temp.task_type == 1),
+                    'task_difficulty'] = 1
+        df_temp.loc[(df_temp.task_stage == 5) & (df_temp.task_type == 1),
+                    'task_difficulty'] = 2
 
         if subject in config['expert']:
             df_temp['performance_level'] = 'high_performer'
@@ -134,7 +135,7 @@ def create_dataframe(subjects, config):
     return data, dataframe, secondary_dataframe
 
 
-def create_r_dataframe(config):
+def create_r_dataframe(config, save_as_csv=True):
     """Create a r dataframe.
 
     Parameters
@@ -150,7 +151,19 @@ def create_r_dataframe(config):
     read_path = Path(__file__).parents[2] / config['processed_dataframe']
     df = read_dataframe(read_path)
 
-    save_path = Path(__file__).parents[2] / config['r_dataframe']
-    feather.write_dataframe(df, save_path)
+    train_save_path = Path(__file__).parents[2] / config['r_dataframe_train']
+    test_save_path = Path(__file__).parents[2] / config['r_dataframe_test']
+    x_train, x_test = train_test_split(df,
+                                       test_size=0.4,
+                                       random_state=42,
+                                       stratify=df['subject'])
+    # Sort them to align subjects
+    x_train.sort_index(inplace=True)
+    x_test.sort_index(inplace=True)
+    if save_as_csv:
+        x_train.to_csv(train_save_path, index=False)
+        x_test.to_csv(test_save_path, index=False)
+    else:
+        feather.write_dataframe(df, train_save_path)
 
     return None

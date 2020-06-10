@@ -208,7 +208,7 @@ def plot_reaction_time(subject, config):
                               loc=result[1],
                               scale=result[2])
     plt.axvline(x=x_25, color='#3C3D40')
-    # plt.axvline(x=x_75, color='#3C3D40')
+    plt.axvline(x=x_75, color='#3C3D40')
 
     # Remove x axis name for the boxplot
     ax_box.set(xlabel='')
