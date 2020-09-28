@@ -77,7 +77,7 @@ def annotate_significance(x1, x2, y, p):
     None
 
     """
-    h = 0.01
+    h = 2
     star = []
     if p < 0.001:
         star = "***"
@@ -86,7 +86,7 @@ def annotate_significance(x1, x2, y, p):
     if star:
         plt.plot([x1, x1, x2, x2], [y, y + h, y + h, y], lw=1.5, c='k')
         plt.text((x1 + x2) * .5,
-                 y - h / 2,
+                 y - h / 1.5,
                  star,
                  ha='center',
                  va='bottom',

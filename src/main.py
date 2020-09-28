@@ -1,5 +1,6 @@
 import yaml
 from pathlib import Path
+import matplotlib.pyplot as plt
 
 from data.create_dataset import create_dataframe
 from data.create_dataset import create_r_dataframe
@@ -60,7 +61,21 @@ with skip_run('skip', 'reaction_time_classification') as check, check():
     save_model_log(output, save_path)
 
 with skip_run('skip', 'plot_classification_accuracy') as check, check():
-    plot_classification_accuracy(config)
+    plt.style.use('clean_box')
+    fig, ax = plt.subplots(nrows=1, ncols=3, figsize=(9, 3.5), sharey=True)
+    config['save_path'] = 'models/experiment_1/'
+    plot_classification_accuracy(config, ax[0])
+    ax[0].set_ylabel('Classification accuracy', fontsize=14)
+    ax[0].legend(
+        ['Chance', 'All subjects', 'Low performers', 'High performers'])
+
+    config['save_path'] = 'models/experiment_2/'
+    plot_classification_accuracy(config, ax[1])
+
+    config['save_path'] = 'models/experiment_0/'
+    plot_classification_accuracy(config, ax[2])
+    plt.tight_layout(pad=0.75)
+    plt.show()
 
 with skip_run('skip', 'task_type_classification') as check, check():
     task_type_classification(config)

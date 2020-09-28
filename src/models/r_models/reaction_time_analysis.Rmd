@@ -40,7 +40,7 @@ df_react <- df_train
 df_react['response'] <- df_react$reaction_time
 
 # Fit the mixed effect model
-model <- glmer(response ~  fixation_rate + transition_ratio + pupil_size + glance_ratio + mental_workload + high_engagement + distraction + task_type + (1 |performance_level),data = df_react, 
+model <- glmer(response ~  fixation_rate + transition_ratio + pupil_size + glance_ratio + mental_workload + high_engagement + distraction + task_type + (1 |performance_level),data = df_react,
                family = gaussian(link = inverse))
 summary(model)
 tab_model(model)

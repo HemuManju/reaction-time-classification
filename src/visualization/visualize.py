@@ -10,7 +10,7 @@ from .utils import (read_model_log, annotate_significance, read_dataframe)
 # sb.set()
 
 
-def plot_classification_accuracy(config):
+def plot_classification_accuracy(config, ax):
     """Plots the bar plot of classification accuracy
 
     Parameters
@@ -39,7 +39,7 @@ def plot_classification_accuracy(config):
                 'accuracy', 'task_information', 'subject_information'
             ])
             temp = np.sort(-data[performance_level]['accuracy'])[0:10]
-            temp_df['accuracy'] = -temp
+            temp_df['accuracy'] = -temp * 100
             temp_df['task_information'] = labels[i]
             temp_df['subject_information'] = performance_level
             df = df.append(temp_df, ignore_index=True)
@@ -53,10 +53,11 @@ def plot_classification_accuracy(config):
         t, p_value[j] = ttest_ind(dummy_1['accuracy'].values,
                                   dummy_2['accuracy'].values)
 
-    plt.figure(figsize=(5, 5), dpi=80)
     # Bar plot
     plt.rcParams['axes.labelweight'] = 'bold'
     color = ['darkgrey', 'lightgrey', 'whitesmoke']
+    ax.grid()
+
     ax = sb.barplot(x='task_information',
                     y='accuracy',
                     hue='subject_information',
@@ -64,31 +65,25 @@ def plot_classification_accuracy(config):
                     capsize=0.05,
                     linewidth=1,
                     edgecolor=".2",
-                    palette=color)
+                    palette=color,
+                    ax=ax)
+    ax.axhline(y=33, xmin=0, xmax=1, linestyle='--', color='k', label='chance')
 
     # Add hatches
     # add_hatches(ax)
 
     # Add annotations
-    x_pos = [-0.25, 0, 0.25]
-    y_pos = [0.60, 0.65, 0.70]
+    x_pos = [-0.30, 0, 0.30]
+    y_pos = [0.60, 0.65, 0.70, 0.75]
     for i, p in enumerate(p_value):
         x1, x2 = x_pos[i], x_pos[i] + 1
-        annotate_significance(x1, x2, y_pos[i], p)
+        annotate_significance(x1, x2, y_pos[i] * 100, p)
 
-    ax.axhline(y=0.33,
-               xmin=0,
-               xmax=1,
-               linestyle='--',
-               color='k',
-               label='chance')
     ax.tick_params(labelsize=14)
-    ax.set_ylim([0, 0.75])
-    ax.legend(loc='center', bbox_to_anchor=(0.5, 1.1), ncol=2, fontsize=14)
-    ax.set_ylabel('Classification accuracy', fontsize=14)
+    ax.set_xlim([-0.50, 1.50])
+    ax.set_ylim([0, 75])
+    ax.set_ylabel('')
     ax.set_xlabel('Task type information', fontsize=14)
-    plt.tight_layout()
-    plt.show()
 
     return None
 
