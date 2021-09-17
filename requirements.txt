@@ -11,4 +11,4 @@ setuptools==41.0.1
 feather==0.9.1dev
 imblearn==0.0
 scikit_learn==0.21.3
-PyYAML==5.1.2
+PyYAML==5.4
