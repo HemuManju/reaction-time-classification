@@ -194,5 +194,6 @@ def reaction_time_classification(config):
         output[key]['accuracy'] = np.asarray(accuracy)
         output[key]['prediction'] = np.asarray(y_pred_array)
         output[key]['true'] = np.asarray(y_true_array)
+        output[key]['confusion_matrix'] = np.asarray(y_true_array)
 
     return output

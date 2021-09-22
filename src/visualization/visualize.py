@@ -7,10 +7,11 @@ from scipy.stats import ttest_ind
 from sklearn.preprocessing import MinMaxScaler
 from scipy import stats
 from .utils import (read_model_log, annotate_significance, read_dataframe)
+
 # sb.set()
 
 
-def plot_classification_accuracy(config, ax):
+def plot_classification_accuracy(config, ax, name):
     """Plots the bar plot of classification accuracy
 
     Parameters
@@ -43,6 +44,9 @@ def plot_classification_accuracy(config, ax):
             temp_df['task_information'] = labels[i]
             temp_df['subject_information'] = performance_level
             df = df.append(temp_df, ignore_index=True)
+
+    # Save the data
+    df.to_excel(name + '.xlsx')
 
     # perform statistical analysis
     p_value = [1, 1, 1]

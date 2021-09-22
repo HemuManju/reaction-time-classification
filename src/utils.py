@@ -58,7 +58,7 @@ class ColorPrint:
         sys.stderr.write('\x1b[1;33m' + message.strip() + '\x1b[0m' + end)
 
 
-def save_dataset(path, dataset, save):
+def save_dataset(path, dataset, save, use_pandas=False):
     """save the dataset.
 
     Parameters
@@ -70,7 +70,9 @@ def save_dataset(path, dataset, save):
     save : Bool
 
     """
-    if save:
+    if save and use_pandas:
+        dataset.to_hdf(path, key='data')
+    elif save:
         dd.io.save(path, dataset)
 
     return None
